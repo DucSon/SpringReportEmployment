@@ -365,41 +365,6 @@ public class MyController {
 	public ModelAndView getPersonalReportExcel(@ModelAttribute("/searchForm") SearchForm searchForm) {
 //		System.out.println(searchForm.getToDate());
 		List<Personalreport> personalreportlist = reportEmpDAO.listPersonalReport(this.username, searchForm.getFromDate(), searchForm.getToDate());
-
-		// Alt+shift+R: replace variable name
-//		Personalreport personalreport = new Personalreport();
-//		List<Servicereport> listservicereport = new ArrayList<Servicereport>();
-//		if ((list.size() > 0) && list.get(list.size()-1) !=null) {
-//			personalreport = list.get(list.size()-1);
-
-//			Servicereport prepaidreport = new Servicereport(username,"Tra truoc", weekreport.getPrepaidDevelop(),weekreport.getPrepaidRestore(), weekreport.getPrepaidCut(), weekreport.getPrepaidStop(), weekreport.getPrepaidDevelop()+weekreport.getPrepaidRestore()- weekreport.getPrepaidCut()- weekreport.getPrepaidStop(), weekreport.getPrepaidUninstall(),weekreport.getPrepaidUnresponsive());
-//			Servicereport postpaidreport = new Servicereport(username,"Tra sau", weekreport.getPostpaidDevelop(),weekreport.getPostpaidRestore(), weekreport.getPostpaidCut(), weekreport.getPostpaidStop(), weekreport.getPostpaidDevelop()+weekreport.getPostpaidRestore()- weekreport.getPostpaidCut()- weekreport.getPostpaidStop(), weekreport.getPostpaidUninstall(),weekreport.getPostpaidUnresponsive());
-//			Servicereport fixedreport = new Servicereport(username,"Co Dinh", weekreport.getFixedDevelop(), weekreport.getFixedRestore(),weekreport.getFixedCut(), weekreport.getFixedStop(), weekreport.getFixedDevelop()+ weekreport.getFixedRestore()- weekreport.getFixedCut()- weekreport.getFixedStop(), weekreport.getFixedUninstall(),weekreport.getFixedUnresponsive());
-//			Servicereport gphonereport = new Servicereport(username,"Gphone", weekreport.getGphoneDevelop(),weekreport.getGphoneRestore(), weekreport.getGphoneCut(), weekreport.getGphoneStop(), weekreport.getGphoneDevelop()+weekreport.getGphoneRestore()- weekreport.getGphoneCut()-weekreport.getGphoneStop(), weekreport.getGphoneUninstall(),weekreport.getGphoneUnresponsive());
-//			Servicereport fiberreport = new Servicereport(username, "Fiber",  weekreport.getFiberDevelop(), weekreport.getFiberRestore(),weekreport.getFiberCut(), weekreport.getFiberStop(), weekreport.getFiberDevelop()+ weekreport.getFiberRestore()-weekreport.getFiberCut()- weekreport.getFiberStop(), weekreport.getFiberUninstall(),weekreport.getFiberUnresponsive());
-//			Servicereport megareport = new Servicereport(username, "Mega",  weekreport.getMegaDevelop(), weekreport.getMegaRestore(),weekreport.getMegaCut(), weekreport.getMegaStop(), weekreport.getMegaDevelop()+ weekreport.getMegaRestore()- weekreport.getMegaCut()- weekreport.getMegaStop(), weekreport.getMegaUninstall(),weekreport.getMegaUnresponsive());
-//			Servicereport mytvreport = new Servicereport(username, "Mytv",  weekreport.getMytvDevelop(), weekreport.getMytvRestore(),weekreport.getMytvCut(), weekreport.getMytvStop(), weekreport.getMytvDevelop()+ weekreport.getMytvRestore()- weekreport.getMytvCut()- weekreport.getMytvStop(), weekreport.getMytvUninstall(),weekreport.getMytvUnresponsive());
-//			Servicereport ivanreport = new Servicereport(username, "Ivan",  weekreport.getIvanDevelop(), weekreport.getIvanRestore(), weekreport.getIvanCut(), weekreport.getIvanStop(), weekreport.getIvanDevelop()+ weekreport.getIvanRestore()- weekreport.getIvanCut()- weekreport.getIvanStop(), weekreport.getIvanUninstall(),weekreport.getIvanUnresponsive());
-//			Servicereport vnedureport = new Servicereport(username,"Vnedu",  weekreport.getVneduDevelop(), weekreport.getVneduRestore(),weekreport.getVneduCut(), weekreport.getVneduStop(), weekreport.getVneduDevelop()+ weekreport.getVneduRestore()- weekreport.getVneduCut()- weekreport.getVneduStop(), weekreport.getVneduUninstall(),weekreport.getVneduUnresponsive());
-//			Servicereport cardreport = new Servicereport(username,"Card", weekreport.getCardDevelop(), weekreport.getCardRestore(),weekreport.getCardCut(), weekreport.getCardStop(), weekreport.getCardDevelop()+ weekreport.getCardRestore()- weekreport.getCardCut()- weekreport.getCardStop(), weekreport.getCardUninstall(),weekreport.getCardUnresponsive());
-//			Servicereport chargereport = new Servicereport(username, "Charge",  weekreport.getChargeDevelop(), weekreport.getChargeRestore(),weekreport.getChargeCut(), weekreport.getChargeStop(),  weekreport.getChargeDevelop()+ weekreport.getChargeRestore()-  weekreport.getChargeCut()- weekreport.getChargeStop(), weekreport.getChargeUninstall(),weekreport.getChargeUnresponsive());
-//			
-//			listservicereport.add(prepaidreport);
-//			listservicereport.add(postpaidreport);
-//			listservicereport.add(fixedreport);
-//			listservicereport.add(gphonereport);
-//			listservicereport.add(fiberreport);
-//			listservicereport.add(megareport);
-//			listservicereport.add(mytvreport);
-//			listservicereport.add(ivanreport);
-//			listservicereport.add(vnedureport);
-//			listservicereport.add(cardreport);
-//			listservicereport.add(chargereport);
-			
-//		}
-//		PersonalreportListExcel
-//		System.out.println(listservicereport.size());
-
 		return new ModelAndView("PersonalreportListExcel", "PersonalReportList", personalreportlist);
 	}
 	
