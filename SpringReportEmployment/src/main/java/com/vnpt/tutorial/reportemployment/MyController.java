@@ -23,6 +23,7 @@ import com.vnpt.entity.User;
 import com.vnpt.entity.UserForm;
 import com.vnpt.entity.Weeklyplan;
 import com.vnpt.entity.Weekreport;
+import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
 
 import org.codehaus.jackson.JsonNode;
@@ -116,15 +117,24 @@ public class MyController {
 	@RequestMapping(value = "/addUser", method = RequestMethod.GET)
 	public String addUser(Model model) {	
 
-		List<User> users = reportEmpDAO.listUsers("dbadmin1");
 
+		// createJsonTree("dbadmin1");
+//		for(int i =0; i< users.size();i++) {
+//			
+//			List<User> users = reportEmpDAO.listUsers("dbadmin1");
+//			
+//		}
+		
+		
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		try {
 	
-			NodeTree noteTree1 = new NodeTree(users.get(0).getUserid(),users.get(0).getUsername());
+			NodeTree nodeHead = new NodeTree(1,"dbadmin1");
+			nodeHead  = reportEmpDAO.createChildren(nodeHead);
 			
-			String nodeTree = objectMapper.writeValueAsString(noteTree1);		
+			System.out.println(nodeHead.toString());
+			String nodeTree = objectMapper.writeValueAsString(nodeHead);		
 			JsonNode node3 = objectMapper.readValue(nodeTree, JsonNode.class);
 
 			model.addAttribute("managerTree",node3.toString());
@@ -159,12 +169,17 @@ public class MyController {
 	
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
 	public @ResponseBody String submitUser(@ModelAttribute("/userForm") UserForm userForm, Model model) {
-
+		
+		
 		if(!userForm.getPassword().equals(userForm.getRepeatpass())) {
 			
 			return "403Page";
 		}
 
+		User user = new User(userForm.getUsername(), userForm.getPassword(), userForm.getManagerid());
+		
+		reportEmpDAO.createUser(user);
+		
 		return "Add User Complete!";
 	}
 	
@@ -364,7 +379,7 @@ public class MyController {
 //		users.add("dbhuy");
 //		users.add("dbhuong");
 
-		List<User> users = reportEmpDAO.listUsers(this.username);
+		List<ChildNode> users = reportEmpDAO.listUsers(this.username);
 		
 		List<String> strUsers = new ArrayList<String>();
 		
@@ -389,7 +404,7 @@ public class MyController {
 		this.username = principal.getName();
 		searchForm.setUsername(this.username);
 		
-		List<User> listUser = reportEmpDAO.listUsers(this.username);
+		List<ChildNode> listUser = reportEmpDAO.listUsers(this.username);
 		
 		for(int i =0;i < listUser.size();i++) {
 //			List<Dailyreport> list = reportEmpDAO.listWeekReport(this.username, searchForm.getFromDate(), searchForm.getToDate());
@@ -397,7 +412,7 @@ public class MyController {
 		}
 
 		List<String> strUsers = new ArrayList<String>();
-		List<User> users = reportEmpDAO.listUsers(this.username);
+		List<ChildNode> users = reportEmpDAO.listUsers(this.username);
 
 		for(int i =0;i < users.size();i++) {
 			
@@ -659,7 +674,7 @@ public class MyController {
 			weekreport = list.get(list.size()-1);
 		}
 				
-		List<User> users = reportEmpDAO.listUsers(this.username);
+		List<ChildNode> users = reportEmpDAO.listUsers(this.username);
 		
 		List<String> strUsers = new ArrayList<String>();
 		

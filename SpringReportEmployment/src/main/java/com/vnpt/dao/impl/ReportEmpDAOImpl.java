@@ -11,7 +11,9 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import com.vnpt.dao.ReportEmpDAO;
+import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
+import com.vnpt.entity.NodeTree;
 import com.vnpt.entity.Personalreport;
 import com.vnpt.entity.User;
 import com.vnpt.entity.Weeklyplan;
@@ -45,7 +47,7 @@ public List<Dailyreport> listReport(String username) {
   }
   
   @SuppressWarnings("unchecked")
-public List<User> listUsers (String userparent) {
+public List<ChildNode> listUsers (String userparent) {
 	  
 	@SuppressWarnings("unused")
 	List<String> users = new ArrayList<String>(); 
@@ -53,9 +55,9 @@ public List<User> listUsers (String userparent) {
 	 Session session = this.sessionFactory.getCurrentSession();
 
 	 Query query = session.createSQLQuery("CALL child_manager(:managername)")
-				.addEntity(User.class).setParameter("managername",userparent );
+				.addEntity(ChildNode.class).setParameter("managername",userparent );
 
-		List<User> abc = query.list();
+		List<ChildNode> abc = query.list();
 	 
 	 return abc;
 	 
@@ -225,6 +227,17 @@ public List<User> listUsers (String userparent) {
       session.persist(weeklyplan);
 	  
   }
+  
+  public void createUser(User user){
+	  
+	  	user.setEnable(1);
+	  	
+		Session session = this.sessionFactory.getCurrentSession();
+
+		session.persist(user);
+
+		return;
+  }
 
   public void updateReport(Dailyreport dailyreport) {
 	  
@@ -252,5 +265,22 @@ public List<User> listUsers (String userparent) {
 
 	  return;
   };
+  
+  public NodeTree createChildren(NodeTree parentNode){
+	  
+	  List<NodeTree> children = new ArrayList<NodeTree>();
+	  List<ChildNode> users = this.listUsers(parentNode.getText());
+	  
+	  for(int i =0;i<users.size();i++){
+		  NodeTree node = new NodeTree(users.get(i).getUserid(), users.get(i).getUsername());
+		  node = createChildren(node);
+		  children.add(node);
+	  }
+	  parentNode.setChildren(children);
+	  System.out.println(parentNode);
+	  return parentNode;
+	  
+  }
+  
  
 }

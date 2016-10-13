@@ -1,7 +1,10 @@
 package com.vnpt.dao;
 
 import java.util.List;
+
+import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
+import com.vnpt.entity.NodeTree;
 import com.vnpt.entity.Personalreport;
 import com.vnpt.entity.User;
 import com.vnpt.entity.Weeklyplan;
@@ -29,8 +32,12 @@ public interface ReportEmpDAO {
 	  
 	  public void updateReport(Dailyreport dailyreport);
 	  
-	  public List<User> listUsers (String userparent);
+	  public List<ChildNode> listUsers (String userparent);
 	  
 	  public List<Personalreport> listPersonalReport(String username, String fromDate, String toDate);
 
+	  public NodeTree createChildren(NodeTree parentNode);
+	  
+	  public void createUser(User user);
+	  
 	}

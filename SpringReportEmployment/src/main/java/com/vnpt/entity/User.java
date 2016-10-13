@@ -11,10 +11,27 @@ public class User {
 	
     private int userid;
     private String username;
-    private String managername;
+    private int manageid;
+    private String password;
+    private int enable;
+    
+    public User(String username, String password, int enable, int userid, int managerid ){
+    	
+    	this.username = username;
+    	this.password = password;
+    	this.enable = enable;
+    	this.userid = userid;
+    	this.manageid = managerid;
+    }
+    public User(String username, String password, int managerid ){
+    	
+    	this.username = username;
+    	this.password = password;
+    	this.manageid = managerid;
+    }
     
 	@Id
-	@Column(name = "USERID")
+	@Column(name = "USER_ID")
 	public int getUserid() {
 		return userid;
 	}
@@ -30,12 +47,28 @@ public class User {
 		this.username = username;
 	}
 	
-	@Column(name = "MANAGERNAME")
-	public String getManagername() {
-		return managername;
+	@Column(name = "MANAGER_ID")
+	public int getManageid() {
+		return manageid;
 	}
-	public void setManagername(String managername) {
-		this.managername = managername;
+	public void setManageid(int manageid) {
+		this.manageid = manageid;
+	}
+	
+	@Column(name = "PASSWORD")
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
+	@Column(name = "ENABLED")
+	public int getEnable() {
+		return enable;
+	}
+	public void setEnable(int enable) {
+		this.enable = enable;
 	}
 
 }
