@@ -14,17 +14,22 @@ import javax.servlet.http.HttpServletRequest;
 import com.vnpt.dao.DepartmentDAO;
 import com.vnpt.dao.ReportEmpDAO;
 import com.vnpt.entity.Department;
+import com.vnpt.entity.NodeTree;
 import com.vnpt.entity.Personalreport;
 import com.vnpt.entity.SearchForm;
 import com.vnpt.entity.Servicereport;
 import com.vnpt.entity.Staff;
 import com.vnpt.entity.User;
+import com.vnpt.entity.UserForm;
 import com.vnpt.entity.Weeklyplan;
 import com.vnpt.entity.Weekreport;
 import com.vnpt.entity.Dailyreport;
+
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.util.JSONWrappedObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -106,6 +111,61 @@ public class MyController {
 	public String loginPage(Model model) {
 
 		return "loginPage";
+	}
+	
+	@RequestMapping(value = "/addUser", method = RequestMethod.GET)
+	public String addUser(Model model) {	
+
+		List<User> users = reportEmpDAO.listUsers("dbadmin1");
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		try {
+	
+			NodeTree noteTree1 = new NodeTree(users.get(0).getUserid(),users.get(0).getUsername());
+			
+			String nodeTree = objectMapper.writeValueAsString(noteTree1);		
+			JsonNode node3 = objectMapper.readValue(nodeTree, JsonNode.class);
+
+			model.addAttribute("managerTree",node3.toString());
+			
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//String managerTree = "[{\"id\":1,\"text\":\"Root node\",\"children\":[{\"id\":2,\"text\":\"Root node 2\", \"children\":[{\"id\":4,\"text\":\"Child node 4\"},{\"id\":5,\"text\":\"Child node 5\"}]},{\"id\":3,\"text\":\"Child node 2\"}]}]";
+
+		return "adduserPage";
+	}
+	
+	@RequestMapping(value = "/404", method = RequestMethod.GET)
+	public String addUserError(Model model) {	
+
+		return "404Page";
+	}
+	
+	@RequestMapping(value = "/addSuccessful", method = RequestMethod.GET)
+	public String addUserSuccessful(Model model) {	
+
+		return "addSuccessfulPage";
+	}
+	
+	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
+	public @ResponseBody String submitUser(@ModelAttribute("/userForm") UserForm userForm, Model model) {
+
+		if(!userForm.getPassword().equals(userForm.getRepeatpass())) {
+			
+			return "403Page";
+		}
+
+		return "Add User Complete!";
 	}
 	
 	@RequestMapping(value = "/logoutSuccessful", method = RequestMethod.GET)
@@ -370,7 +430,7 @@ public class MyController {
 	
 
 	@RequestMapping(value = "/weeklyplan", method = RequestMethod.GET)
-	public String createWeekPlanFormHandler(Model model) {
+	public String createWeekPlanFormHandler(Model model, Principal principal) {
 		
 		Weeklyplan weeklyplan = new Weeklyplan();
 		
@@ -609,7 +669,6 @@ public class MyController {
 		}
 		
 		searchForm.setListOfUsers(strUsers);
-		
 		
 		model.addAttribute("dailyreport", weekreport);
 		model.addAttribute("searchForm", searchForm);

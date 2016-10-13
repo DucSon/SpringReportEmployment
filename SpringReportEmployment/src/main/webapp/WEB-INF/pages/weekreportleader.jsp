@@ -23,7 +23,7 @@
     <h1>Report of Employment</h1>
     <h3>Nhan vien:${dailyreport.username}</h3>
 	<form:form id="searchForm" modelAttribute="searchForm" method="POST"
-		action="/SpringReportEmployment/weekreport">
+		action="${pageContext.request.contextPath}/weekreport">
 		<table>
 			<tr>
 				<td>Tu Ngay:</td>

@@ -29,7 +29,7 @@
     <h3>Nhan vien:${searchForm.username}</h3>
     
 	<form:form id="searchForm" modelAttribute="searchForm" method="POST"
-		action="/SpringReportEmployment/leaderreport">
+		action="${pageContext.request.contextPath}/leaderreport">
 		<table>
 			<tr>
 				<td>Tu Ngay:</td>

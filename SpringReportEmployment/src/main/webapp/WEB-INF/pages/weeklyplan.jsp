@@ -42,7 +42,7 @@
 		<h2 align="left" style="width: 80%;">Kế hoạch chi tiết</h2>
 		<h3>Kế hoạch tuần từ:${monday} đến ${saturday}</h3>
 		<form:form id="weeklyplan" modelAttribute="weeklyplan" method="POST"
-			action="/SpringReportEmployment/weeklyplan">
+			action="${pageContext.request.contextPath}/weeklyplan">
 			<table border="1">
 				<tr>
 					<th>Date</th>

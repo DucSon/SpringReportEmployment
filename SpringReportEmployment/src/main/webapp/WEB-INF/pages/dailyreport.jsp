@@ -42,7 +42,7 @@
 		<h1>Report Form of Employment</h1>
 		
 				<form:form id ="drForm" modelAttribute="dailyreport" method="POST"
-                        action="/SpringReportEmployment/dailyreport">               
+                        action="${pageContext.request.contextPath}/dailyreport">               
         <table>
 				<tr>
 					<td style="width:100px;">Người báo cáo: </td>

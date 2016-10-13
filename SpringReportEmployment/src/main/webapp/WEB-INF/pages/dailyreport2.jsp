@@ -18,7 +18,7 @@
 		console.log(dailyreport);
 		$.ajax({
 			type : "POST",
-			url : "/SpringReportEmployment/savereport.do",
+			url : "${pageContext.request.contextPath}/savereport.do",
 			data: dailyreport,
 			dataType: 'json',
 			success : function(jsonInString) {
@@ -45,7 +45,7 @@
 		<h1>Report Form of Employment</h1>
 		
 				<form:form id ="drForm" modelAttribute="dailyreport" method="POST"
-                        action="/SpringReportEmployment/dailyreport">               
+                        action="${pageContext.request.contextPath}/dailyreport">               
         <table>
 				<tr>
 					<td style="width:100px;">Nguoi bao cao : </td>

@@ -16,8 +16,7 @@
          </div>
     </c:if>
        
-   <h3>Enter user name and password:</h3>  
-     
+   <h3>Enter user name and password:</h3>       
    <form name='f' action="${pageContext.request.contextPath}/j_spring_security_check" method='POST'>
       <table>
          <tr>
@@ -33,6 +32,6 @@
          </tr>
       </table>
   </form>
-  
+       <a href="${pageContext.request.contextPath}/addUser">AddUser</a>
 </body>
 </html>

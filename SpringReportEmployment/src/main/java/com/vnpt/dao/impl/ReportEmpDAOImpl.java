@@ -47,6 +47,7 @@ public List<Dailyreport> listReport(String username) {
   @SuppressWarnings("unchecked")
 public List<User> listUsers (String userparent) {
 	  
+	@SuppressWarnings("unused")
 	List<String> users = new ArrayList<String>(); 
 	
 	 Session session = this.sessionFactory.getCurrentSession();
