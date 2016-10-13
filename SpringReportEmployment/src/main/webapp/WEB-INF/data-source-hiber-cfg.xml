@@ -26,6 +26,7 @@
 		<value>com.vnpt.entity.Hibernate</value>	
 		<value>com.vnpt.entity.User</value>  
 		<value>com.vnpt.entity.ChildNode</value>
+		<value>com.vnpt.entity.Userroles</value>
           </list>
       </property>
                

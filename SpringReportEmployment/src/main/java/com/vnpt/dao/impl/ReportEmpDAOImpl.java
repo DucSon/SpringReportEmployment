@@ -13,9 +13,11 @@ import org.hibernate.SessionFactory;
 import com.vnpt.dao.ReportEmpDAO;
 import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
+import com.vnpt.entity.Hibernate;
 import com.vnpt.entity.NodeTree;
 import com.vnpt.entity.Personalreport;
 import com.vnpt.entity.User;
+import com.vnpt.entity.Userroles;
 import com.vnpt.entity.Weeklyplan;
 import com.vnpt.entity.Weekreport;
 
@@ -233,9 +235,29 @@ public List<ChildNode> listUsers (String userparent) {
 	  	user.setEnable(1);
 	  	
 		Session session = this.sessionFactory.getCurrentSession();
-
+		Query query = session.createSQLQuery("CALL test_hibernate(:userid)")
+				.addEntity(Hibernate.class).setParameter("userid", user.getManageid());
+		
+		@SuppressWarnings("unchecked")
+		List<Hibernate> list = query.list();
+	
+		String roleManager = list.get(0).getUserrole();
+		Userroles userroles = new Userroles(user.getUsername());
+		if(roleManager.equals("ADMIN")){
+			userroles.setUserrole("PD_ADMIN");
+		}else if (roleManager.equals("PD_ADMIN")){
+			userroles.setUserrole("DD_ADMIN");
+		}else if (roleManager.equals("DD_ADMIN")){
+			userroles.setUserrole("LEADER");
+		}else if (roleManager.equals("LEADER")){
+			userroles.setUserrole("USER");
+		}else if (roleManager.equals("USER")){
+			userroles.setUserrole("USER");
+		}
+		session.persist(userroles);
+		
+		session = this.sessionFactory.getCurrentSession();
 		session.persist(user);
-
 		return;
   }
 
@@ -266,16 +288,17 @@ public List<ChildNode> listUsers (String userparent) {
 	  return;
   };
   
-  public NodeTree createChildren(NodeTree parentNode){
+  public NodeTree createChildren(NodeTree parentNode) {
 	  
 	  List<NodeTree> children = new ArrayList<NodeTree>();
 	  List<ChildNode> users = this.listUsers(parentNode.getText());
 	  
-	  for(int i =0;i<users.size();i++){
+	  for(int i =0;i<users.size();i++) {
 		  NodeTree node = new NodeTree(users.get(i).getUserid(), users.get(i).getUsername());
 		  node = createChildren(node);
 		  children.add(node);
 	  }
+	  
 	  parentNode.setChildren(children);
 	  System.out.println(parentNode);
 	  return parentNode;

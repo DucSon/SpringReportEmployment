@@ -117,15 +117,6 @@ public class MyController {
 	@RequestMapping(value = "/addUser", method = RequestMethod.GET)
 	public String addUser(Model model) {	
 
-
-		// createJsonTree("dbadmin1");
-//		for(int i =0; i< users.size();i++) {
-//			
-//			List<User> users = reportEmpDAO.listUsers("dbadmin1");
-//			
-//		}
-		
-		
 		ObjectMapper objectMapper = new ObjectMapper();
 
 		try {
@@ -134,6 +125,7 @@ public class MyController {
 			nodeHead  = reportEmpDAO.createChildren(nodeHead);
 			
 			System.out.println(nodeHead.toString());
+			
 			String nodeTree = objectMapper.writeValueAsString(nodeHead);		
 			JsonNode node3 = objectMapper.readValue(nodeTree, JsonNode.class);
 
@@ -149,8 +141,6 @@ public class MyController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		//String managerTree = "[{\"id\":1,\"text\":\"Root node\",\"children\":[{\"id\":2,\"text\":\"Root node 2\", \"children\":[{\"id\":4,\"text\":\"Child node 4\"},{\"id\":5,\"text\":\"Child node 5\"}]},{\"id\":3,\"text\":\"Child node 2\"}]}]";
 
 		return "adduserPage";
 	}
