@@ -8,7 +8,8 @@
 <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://raw.githubusercontent.com/DucSon/SpringReportEmployment/master/SpringReportEmployment/src/main/webapp/WEB-INF/pages/jquery-3.1.1.min.js"></script>
+<!-- <script src="https://raw.githubusercontent.com/DucSon/SpringReportEmployment/master/SpringReportEmployment/src/main/webapp/WEB-INF/pages/jstree.min.js"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.2/jstree.min.js"></script>
 <link href="skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css">
 

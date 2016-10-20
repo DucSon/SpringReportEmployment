@@ -25,7 +25,6 @@ import com.vnpt.entity.Weeklyplan;
 import com.vnpt.entity.Weekreport;
 import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -61,6 +60,10 @@ public class MyController {
 	public String home(Model model) {
 		return "loginPage"; 
 	}
+	@RequestMapping({ "jquery" })
+	public String jquerylib(Model model) {
+		return "jquery.min"; 
+	}
 	
 	private String username;
 	
@@ -81,10 +84,10 @@ public class MyController {
 	                        .getAuthentication().getAuthorities());
 	        if (roles.contains("ROLE_LEADER")) {
 	        	
-	            return new RedirectView("weeklyplan");
+	            return new RedirectView("dailyreport");
 	        }
 	        if (roles.contains("ROLE_DD_ADMIN")) {
-	            return new RedirectView("dailyreport");
+	            return new RedirectView("weeklyplan");
 	        }
 	        if (roles.contains("ROLE_PD_ADMIN")) {
 	            return new RedirectView("provinceDirector");
@@ -121,10 +124,10 @@ public class MyController {
 
 		try {
 	
-			NodeTree nodeHead = new NodeTree(1,"dbadmin1");
+			NodeTree nodeHead = new NodeTree(0,"dbvnpt");
 			nodeHead  = reportEmpDAO.createChildren(nodeHead);
 			
-			System.out.println(nodeHead.toString());
+			System.out.println(nodeHead.getChildren());
 			
 			String nodeTree = objectMapper.writeValueAsString(nodeHead);		
 			JsonNode node3 = objectMapper.readValue(nodeTree, JsonNode.class);
@@ -303,11 +306,35 @@ public class MyController {
 			
 			System.out.println(dailyreport.getStatus());
 			
+			System.out.println(dailyreport.getDate());
+			System.out.println(dailyreport.getDatereport());
+			
 			if(dailyreport.getStatus().equals("DONE")) {
 				
-				dailyreport = new Dailyreport();
-				return "redirect:weeklyplan";
-//				System.out.println(dailyreport.getDate());
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				Calendar cal = Calendar.getInstance();
+				String date = dateFormat.format(cal.getTime());
+				
+				System.out.println(date);
+				System.out.println(dailyreport.getDatereport().toString().trim());
+
+				if(date.equals(dailyreport.getDatereport())){
+					dailyreport = new Dailyreport();
+					return "redirect:weeklyplan";	
+				}else {
+					dailyreport = new Dailyreport();
+					dailyreport.setUsername(this.username);
+					
+					DateFormat dateFormat2 = new SimpleDateFormat("MM/dd/yyyy");
+					Calendar cal2 = Calendar.getInstance();
+					String date2 = dateFormat2.format(cal.getTime());		
+					dailyreport.setDatereport(date2);
+					
+					dailyreport.setDatereport(date);
+					model.addAttribute("dailyreport", dailyreport);
+					return "dailyreport";	
+				}
+				
 			} else if(dailyreport.getStatus().equals("DRAF")) {
 				try {
 					String date = dailyreport.getDate();
@@ -436,7 +463,7 @@ public class MyController {
 
 	@RequestMapping(value = "/weeklyplan", method = RequestMethod.GET)
 	public String createWeekPlanFormHandler(Model model, Principal principal) {
-		
+		this.username = principal.getName();
 		Weeklyplan weeklyplan = new Weeklyplan();
 		
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -459,7 +486,30 @@ public class MyController {
 		model.addAttribute("weeklyplan", weeklyplan);
 		model.addAttribute("monday",monday);
 		model.addAttribute("saturday",saturday);
-		
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		try {
+	
+			
+			
+			NodeTree nodeHead = new NodeTree(0,this.username);
+			nodeHead  = reportEmpDAO.createChildren(nodeHead);
+
+			String nodeTree = objectMapper.writeValueAsString(nodeHead);		
+			JsonNode node3 = objectMapper.readValue(nodeTree, JsonNode.class);
+
+			model.addAttribute("managerTree",node3.toString());
+			
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return "weeklyplan";
 	}
 	
