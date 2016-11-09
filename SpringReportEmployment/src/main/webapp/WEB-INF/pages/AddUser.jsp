@@ -1,6 +1,6 @@
 AddUser.jsp
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-    pageEncoding="ISO-8859-1"%>
+	pageEncoding="ISO-8859-1"%>
 
 <html>
 <head>
@@ -32,25 +32,24 @@ AddUser.jsp
 </script>
 </head>
 <body>
-    <h1>Add Users using Ajax ........</h1>
-    <table>
-        <tr>
-            <td>Enter your name :</td>
-            <td><input type="text" id="name" name="name"><br /></td>
-        </tr>
-        <tr>
-            <td>Education :</td>
-            <td><input type="text" id="education"><br /></td>
-        </tr>
-        <tr>
-            <td colspan="2"><input type="button" value="Add Users"
-                onclick="doAjaxPost()"><br /></td>
-        </tr>
-        <tr>
-            <td colspan="2"><div id="info" style="color: green;"></div></td>
-        </tr>
-    </table>
-    <a href="/SpringReportEmployment/showUsers.htm">Show All
-        Users</a>
+	<h1>Add Users using Ajax ........</h1>
+	<table>
+		<tr>
+			<td>Enter your name :</td>
+			<td><input type="text" id="name" name="name"><br /></td>
+		</tr>
+		<tr>
+			<td>Education :</td>
+			<td><input type="text" id="education"><br /></td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="button" value="Add Users"
+				onclick="doAjaxPost()"><br /></td>
+		</tr>
+		<tr>
+			<td colspan="2"><div id="info" style="color: green;"></div></td>
+		</tr>
+	</table>
+	<a href="/SpringReportEmployment/showUsers.htm">Show All Users</a>
 </body>
 </html>

@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	
+	
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <link rel="stylesheet"
@@ -11,9 +13,11 @@
 <link rel="stylesheet" type="text/css"
 	href="http://jonthornton.github.io/jquery-timepicker/jquery.timepicker.css" />
 
-<script src="https://raw.githubusercontent.com/DucSon/SpringReportEmployment/master/SpringReportEmployment/src/main/webapp/WEB-INF/pages/jquery-3.1.1.min.js"></script>
+<script
+	src="https://raw.githubusercontent.com/DucSon/SpringReportEmployment/master/SpringReportEmployment/src/main/webapp/WEB-INF/pages/jquery-3.1.1.min.js"></script>
 <!-- <script src="https://raw.githubusercontent.com/DucSon/SpringReportEmployment/master/SpringReportEmployment/src/main/webapp/WEB-INF/pages/jstree.min.js"></script> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.2/jstree.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.2/jstree.min.js"></script>
 
 <html>
 <style>
@@ -28,8 +32,10 @@
 	width: 74%;
 	height: auto;
 	background: white;
-	float: left
+	float: left;
+	font-family: Times New Roman, Helvetica, sans-serif;
 }
+
 #addplan {
 	height: 300px;
 	width: 100%;
@@ -37,6 +43,8 @@
 	clear: both
 }
 </style>
+
+<!-- header('Content-Type: text/html; charset=utf-8') -->
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -60,9 +68,12 @@
 
 </script>
 <body>
-	<a href="${pageContext.request.contextPath}/weekreport">Báo cáo phát triển dịch vụ</a>
-	<a href="${pageContext.request.contextPath}/leaderreport">Báo cáo cá nhân</a>
-	<a href="${pageContext.request.contextPath}/weeklyplan">Kế hoạch tuần</a>
+	<a href="${pageContext.request.contextPath}/weekreport">Báo cáo
+		phát triển dịch vụ</a>
+	<a href="${pageContext.request.contextPath}/leaderreport">Báo cáo
+		cá nhân</a>
+	<a href="${pageContext.request.contextPath}/weeklyplan">Kế hoạch
+		tuần</a>
 	<a href="${pageContext.request.contextPath}/logout">Logout</a>
 	<div align="center">
 		<h1>Weekly Plan</h1>
@@ -85,14 +96,13 @@
 						</tr>
 						<tr>
 							<td>Nhân viên</td>
-							<td>
-					</td>
+							<td></td>
 						</tr>
 					</table>
 					<div id="evts" class="treeview" style="overflow: scrollbar;"></div>
 				</div>
-				<div id="tableplan"  align="right">
-					<table border="1">
+				<div id="tableplan" align="right" onload="load();">
+					<table border="1" id="table">
 						<tr>
 							<th style="width: 10%;">Date</th>
 							<th style="width: 10%;">Time</th>
@@ -150,8 +160,8 @@
 						</tr>
 					</table>
 					<div>
-					<br>
-					<table>
+						<br>
+						<table>
 							<tr>
 								<td colspan="2" align="left"><input id="btnSave"
 									name="savePlan" type="submit" value="Thêm Kế hoạch"></td>
@@ -165,34 +175,91 @@
 							</tr>
 						</table>
 					</div>
-
 				</div>
 			</div>
 
 		</form:form>
 	</div>
-<script>
+	<script type="text/javascript">
 var data2 = ${managerTree};
-// var data2 = [{"id":1,"text":"Root node","children":[{"id":2,"text":"Root node 2", "children":[{"id":4,"text":"Child node 4"},{"id":5,"text":"Child node 5"}]},{"id":3,"text":"Child node 2"}]}];
 
-	// interaction and events
 	$("#evts")
 			.on(
 					"changed.jstree",
 					function(e, data) {
 						if (data.selected.length) {
-							
-							
-							
-							
-// 							alert(data.instance.get_node(data.selected[0]).text);
-// 							document.getElementById("managername").value = data.instance
-// 									.get_node(data.selected[0]).text;
-// 							document.getElementById("managerid").value = data.instance
-// 							.get_node(data.selected[0]).id;
+
+							var username = data.instance.get_node(data.selected[0]).text;
+							var data2 = {
+									"username": username
+							};
 						
-							
-						
+						$.ajax({
+								url:'selectNode',
+								type:'GET',
+								data : data2,
+								contentType: "text/html; charset=UTF-8",
+								success: function(response) {
+									console.log(response);
+// 									var desc = "Kiểm tra";
+// 									var c1 = desc.charAt(0);
+// 									var c2 = desc.charAt(1);
+// 									var c3 = desc.charAt(2);
+// 									console.log(c1);
+// 									console.log(c2);
+// 									console.log(c3);
+// 									console.log(response.length);
+// 									console.log(response);	
+									var jsonarray = JSON.parse(response);								
+// 									console.log(jsonarray.length);	
+									if(jsonarray.length >0) {
+										
+										console.log(jsonarray[0].description.length);
+// 										var desc = "-Kiểm tra";
+// 										var c1 = desc.charAt(2);
+// 										var c2 = desc.charAt(3);
+// 										var c3 = desc.charAt(4);
+
+										console.log(jsonarray[0].description.length);	
+										document.getElementById("username").value = jsonarray[0].description;																			
+									}
+									
+									var rowlast= $('#table tr:last').index();
+									for(var i=0; i< rowlast+1;i++){
+										$('#table tr:first').remove();
+									}
+									
+									$("#table tbody")
+									.append ("<tr> <th style='width: 10%;'>Date</th>"
+									+ "<th style='width: 10%;'>Time</th>"
+									+ "<th style='width: 30%;'>Description</th>"
+									+ "<th style='width: 15%;'>Location</th>"
+									+ "<th style='width: 15%;'>Result</th>"
+									+ "<th style='width: 20%;'>Note</th>"
+									+ "<th><input type='checkbox' id='checkBoxAll'></th>");	
+									
+									for(var i =0;i< jsonarray.length;i++){
+										
+										$("#table")
+										.append ("<tr> <th style='width: 10%;'>"+jsonarray[i].date+"</td>"
+										+ "<td style='width: 10%;'>"+jsonarray[i].time+"</td>"
+										+ "<td style='width: 30%;'>"+jsonarray[i].description+"</td>"
+										+ "<td style='width: 15%;'>"+jsonarray[i].location+"</td>"
+										+ "<td style='width: 15%;'>"+jsonarray[i].result+"</td>"
+										+ "<td style='width: 20%;'>"+jsonarray[i].note+"</td>"
+										+ "<td><input type='checkbox' class='chkCheckBoxId' value="+jsonarray[i].weeklyplanid+" name='weeklyplanid'></td>");	
+										
+									}
+
+								},
+								error : function(e) {
+									console.log("ERROR: ", e);
+									display(e);
+								},
+								done : function(e) {
+									console.log("DONE");
+								}
+							});	
 						}
 					}).jstree({
 				'core' : {
@@ -200,6 +267,24 @@ var data2 = ${managerTree};
 					'data' : data2,
 				}
 			});
+	
+// 	load = function() {
+
+// for (i = 0; i < response.data.length; i++) {
+// 					$("#table")
+// 							.append (
+// 									"<tr class='tr'> <td> "
+// 											+ response.data[i].user_name
+// 											+ " </td> <td> "
+// 											+ response.data[i].email
+// 											+ " </td> <td> <a href='#' onclick= edit("
+// 											+ i
+// 											+ ");> Edit </a>  </td> </td> <td> <a href='#' onclick='delete_("
+// 											+ response.data[i].user_id
+// 											+ ");'> Delete </a>  </td> </tr>");
+// 				}
+// 	}
+	
 </script>
 </body>
 </head>

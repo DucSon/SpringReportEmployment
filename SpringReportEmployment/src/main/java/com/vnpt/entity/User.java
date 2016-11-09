@@ -30,6 +30,9 @@ public class User {
     	this.manageid = managerid;
     }
     
+    public User(){
+    }
+    
 	@Id
 	@Column(name = "USER_ID")
 	public int getUserid() {

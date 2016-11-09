@@ -58,13 +58,14 @@
 							<td style="width: 150px;">${listWeeklyPlan.location}</td>
 							<td style="width: 100px;">${listWeeklyPlan.result}</td>
 							<td style="width: 200px;">${listWeeklyPlan.note}</td>
-							<td><input type ="checkbox" class="chkCheckBoxId" value="${listWeeklyPlan.weeklyplanid}" name="weeklyplanid"></td>
+							<td><input type="checkbox" class="chkCheckBoxId"
+								value="${listWeeklyPlan.weeklyplanid}" name="weeklyplanid"></td>
 						</tr>
 					</c:forEach>
 				</c:if>
-			</table>              
-        <table>
-				<tr> 	
+			</table>
+			<table>
+				<tr>
 					<td style="width: 100px;">Người lập kế hoạch:</td>
 					<td style="width: 100px;"><form:input path="username"
 							value="${weeklyplan.username}" style="width:100px;" /><br /></td>
@@ -101,8 +102,8 @@
 							style="width:200px;" /></td>
 				</tr>
 			</table>
-			<br/>
-			<br/>
+			<br />
+			<br />
 			<tr>
 				<td colspan="2" align="left"><input id="btnSave"
 					name="savePlan" type="submit" value="Thêm Kế hoạch"></td>

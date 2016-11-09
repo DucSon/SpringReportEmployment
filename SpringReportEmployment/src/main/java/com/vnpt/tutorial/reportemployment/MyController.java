@@ -1,6 +1,8 @@
 package com.vnpt.tutorial.reportemployment;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -11,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
+//import com.entities.Users;
 import com.vnpt.dao.DepartmentDAO;
 import com.vnpt.dao.ReportEmpDAO;
 import com.vnpt.entity.Department;
@@ -29,7 +32,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.util.JSONWrappedObject;
+import org.codehaus.jackson.node.ArrayNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,6 +61,12 @@ public class MyController {
 
 	@RequestMapping({ "/", "/home", "/index" })
 	public String home(Model model) {
+		
+		String value = "Kiểm tra công tác phòng cháy chữa cháy";
+		char c36 = value.charAt(1);
+
+		System.out.println(value);
+		
 		return "loginPage"; 
 	}
 	@RequestMapping({ "jquery" })
@@ -117,6 +126,17 @@ public class MyController {
 		return "loginPage";
 	}
 	
+//	public @ResponseBody Map<String,Object> getSaved(Users users) {
+//		Map<String,Object> map = new HashMap<String,Object>();
+//		
+//		if(userServices.saveOrUpdate(users)) {
+//			map.put("status","200");
+//			map.put("message","Your record have been saved successfully");
+//		}
+//		
+//		return map;
+//	}
+	
 	@RequestMapping(value = "/addUser", method = RequestMethod.GET)
 	public String addUser(Model model) {	
 
@@ -148,6 +168,69 @@ public class MyController {
 		return "adduserPage";
 	}
 	
+	@RequestMapping(value = "/selectNode", method = RequestMethod.GET, produces = "text/html; charset=UTF-8")
+	public @ResponseBody byte[] selectNode(User user) {
+
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		String monday = dateFormat.format(cal.getTime());
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+		String saturday = dateFormat.format(cal.getTime());
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		List<Weeklyplan> list = reportEmpDAO.listWeeklyPlan(user.getUsername(), monday, saturday);
+		
+		for(int i =0; i< list.size();i++) {
+			System.out.println(list.get(i).getDescription().length());
+		}
+		
+			ArrayNode listData = objectMapper.valueToTree(list);
+
+			String lstStr = listData.toString();
+
+//			char c37 = lstStr.charAt(37);
+//			char c38 = lstStr.charAt(38);
+//			char c39 = lstStr.charAt(39);
+			
+//			System.out.println(c37);
+//			System.out.println(c38);
+//			System.out.println(c39);
+				
+//				String value = "Kiểm tra công tác phòng cháy chữa cháy";
+				
+//				char c36 = value.charAt(1);
+//				byte ptext[];
+				//value.get
+				
+//				char c2 = "ể";
+				byte[] byteText = lstStr.getBytes(Charset.forName("UTF-8"));
+//				newString = new String(byteText, "UTF-8"); 
+//				
+//				byte[] byteText2 = newString.getBytes(Charset.forName("UTF-8"));
+				return byteText;
+
+//			Charset.forName("UTF-8").encode(value);
+
+//			System.out.println(lstStr);
+//			System.out.println(lstStr.length());
+//			lstStr ="This is a Test!";
+
+//			return null;
+	}
+	
+//	@RequestMapping(value="/selectNode", method=RequestMethod.POST)
+//	public @ResponseBody Map<String,Object> selectNode(User user) {
+//		Map<String,Object> map = new HashMap<String,Object>();
+//		
+////		if(userServices.saveOrUpdate(users)) {
+//			map.put("status","200");
+//			map.put("message","Your record have been saved successfully");
+////		}
+//		return map;
+//	}
+	
 	@RequestMapping(value = "/404", method = RequestMethod.GET)
 	public String addUserError(Model model) {	
 
@@ -162,7 +245,6 @@ public class MyController {
 	
 	@RequestMapping(value = "/addUser", method = RequestMethod.POST)
 	public @ResponseBody String submitUser(@ModelAttribute("/userForm") UserForm userForm, Model model) {
-		
 		
 		if(!userForm.getPassword().equals(userForm.getRepeatpass())) {
 			
@@ -257,7 +339,7 @@ public class MyController {
 		return "savereport";
 	}
 	
-	@RequestMapping(value = "/savereport.do", method = RequestMethod.POST, produces = "application/json")
+	@RequestMapping(value = "/savereport.do", method = RequestMethod.POST, produces = "text/html; charset=UTF-8")
 	public @ResponseBody String addUser(@ModelAttribute(value = "dailyreport") Dailyreport dailyreport, BindingResult result) {
 		
 		String returnText ="savereport";
@@ -475,6 +557,16 @@ public class MyController {
 
 		List<Weeklyplan> list = reportEmpDAO.listWeeklyPlan(this.username,monday, saturday);
 		
+		for(int i =0; i< list.size();i++){
+			System.out.println(list.get(i).getDate());
+			System.out.println(list.get(i).getDescription());
+			System.out.println(list.get(i).getDatecreateplan());
+			System.out.println(list.get(i).getLocation());
+			System.out.println(list.get(i).getNote());
+			System.out.println(list.get(i).getResult());
+			
+		}
+		
 		System.out.println("Size:"+list.size());
 		
 		if (list.size() > 0) {
@@ -490,8 +582,6 @@ public class MyController {
 
 		try {
 	
-			
-			
 			NodeTree nodeHead = new NodeTree(0,this.username);
 			nodeHead  = reportEmpDAO.createChildren(nodeHead);
 
@@ -513,7 +603,7 @@ public class MyController {
 		return "weeklyplan";
 	}
 	
-	@RequestMapping(value = "/weeklyplan", method = RequestMethod.POST,  params = { "savePlan" }, produces = "application/x-www-form-urlencoded;charset=UTF-8")
+	@RequestMapping(value = "/weeklyplan", method = RequestMethod.POST,  params = { "savePlan" }, produces = "text/html; charset=UTF-8")
 	public String saveWeekPlanFormHandlerPOST(HttpServletRequest request,
 			Model model,	
 			@ModelAttribute("Weeklyplan") Weeklyplan weeklyplan
@@ -530,7 +620,7 @@ public class MyController {
 		System.out.println("deletePlan");
 
 		for (String weeklyplanid : request.getParameterValues("weeklyplanid")) {
-			
+			 
 			System.out.println(weeklyplanid);
 			
 			reportEmpDAO.deleteWeeklyplan(Integer.parseInt(weeklyplanid));
