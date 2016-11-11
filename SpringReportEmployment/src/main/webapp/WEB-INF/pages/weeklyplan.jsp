@@ -110,6 +110,7 @@
 							<th style="width: 15%;">Location</th>
 							<th style="width: 15%;">Result</th>
 							<th style="width: 20%;">Note</th>
+							<th style="width: 20%;">Status</th>
 							<th><input type="checkbox" id="checkBoxAll"></th>
 						</tr>
 						<c:if test="${not empty list}">
@@ -121,6 +122,7 @@
 									<td style="width: 15%;">${listWeeklyPlan.location}</td>
 									<td style="width: 15%;">${listWeeklyPlan.result}</td>
 									<td style="width: 20%;">${listWeeklyPlan.note}</td>
+									<td style="width: 20%;">${listWeeklyPlan.status}</td>
 									<td><input type="checkbox" class="chkCheckBoxId"
 										value="${listWeeklyPlan.weeklyplanid}" name="weeklyplanid"></td>
 								</tr>
@@ -168,7 +170,7 @@
 								<td colspan="2" align="left"><input id="btnDelete"
 									name="deletePlan" type="submit" value="deletePlan"></td>
 								<td colspan="2" align="left"><input id="btnSend"
-									name="sendPlan" type="submit" value="Gửi kế hoạch"></td>
+									name="sendPlan" type="submit" value="Gửi kế hoạch(Public)"></td>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -200,30 +202,7 @@ var data2 = ${managerTree};
 								data : data2,
 								contentType: "text/html; charset=UTF-8",
 								success: function(response) {
-									console.log(response);
-// 									var desc = "Kiểm tra";
-// 									var c1 = desc.charAt(0);
-// 									var c2 = desc.charAt(1);
-// 									var c3 = desc.charAt(2);
-// 									console.log(c1);
-// 									console.log(c2);
-// 									console.log(c3);
-// 									console.log(response.length);
-// 									console.log(response);	
-									var jsonarray = JSON.parse(response);								
-// 									console.log(jsonarray.length);	
-									if(jsonarray.length >0) {
-										
-										console.log(jsonarray[0].description.length);
-// 										var desc = "-Kiểm tra";
-// 										var c1 = desc.charAt(2);
-// 										var c2 = desc.charAt(3);
-// 										var c3 = desc.charAt(4);
-
-										console.log(jsonarray[0].description.length);	
-										document.getElementById("username").value = jsonarray[0].description;																			
-									}
-									
+									var jsonarray = JSON.parse(response);							
 									var rowlast= $('#table tr:last').index();
 									for(var i=0; i< rowlast+1;i++){
 										$('#table tr:first').remove();
@@ -236,6 +215,7 @@ var data2 = ${managerTree};
 									+ "<th style='width: 15%;'>Location</th>"
 									+ "<th style='width: 15%;'>Result</th>"
 									+ "<th style='width: 20%;'>Note</th>"
+									+ "<th style='width: 20%;'>Status</th>"
 									+ "<th><input type='checkbox' id='checkBoxAll'></th>");	
 									
 									for(var i =0;i< jsonarray.length;i++){
@@ -247,6 +227,7 @@ var data2 = ${managerTree};
 										+ "<td style='width: 15%;'>"+jsonarray[i].location+"</td>"
 										+ "<td style='width: 15%;'>"+jsonarray[i].result+"</td>"
 										+ "<td style='width: 20%;'>"+jsonarray[i].note+"</td>"
+										+ "<td style='width: 20%;'>"+jsonarray[i].status+"</td>"
 										+ "<td><input type='checkbox' class='chkCheckBoxId' value="+jsonarray[i].weeklyplanid+" name='weeklyplanid'></td>");	
 										
 									}

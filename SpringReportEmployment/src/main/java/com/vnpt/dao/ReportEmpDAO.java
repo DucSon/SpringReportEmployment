@@ -20,6 +20,10 @@ public interface ReportEmpDAO {
 	
 	  public List<Weeklyplan> listWeeklyPlan(String username, String fromDate, String toDate);
 	  
+	  public List<Weeklyplan> listWeeklyPlanChild(String username, String fromDate, String toDate, String status);
+	  
+	  public void sendWeeklyplan(int weeklyplanid, String status);
+	  
 	  public Integer getMaxDRId();
 	  
 	  public void createNewReport(String username,String date, Integer prepaidDevelop); 

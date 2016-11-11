@@ -1,7 +1,6 @@
 package com.vnpt.tutorial.reportemployment;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.Principal;
 import java.text.DateFormat;
@@ -13,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
-//import com.entities.Users;
 import com.vnpt.dao.DepartmentDAO;
 import com.vnpt.dao.ReportEmpDAO;
 import com.vnpt.entity.Department;
@@ -62,10 +60,7 @@ public class MyController {
 	@RequestMapping({ "/", "/home", "/index" })
 	public String home(Model model) {
 
-		String value = "Kiểm tra công tác phòng cháy chữa cháy";
-		char c36 = value.charAt(1);
-
-		System.out.println(value);
+//		String value = "Kiểm tra công tác phòng cháy chữa cháy";
 
 		return "loginPage";
 	}
@@ -110,7 +105,6 @@ public class MyController {
 		if (target == null) {
 			return;
 		}
-		System.out.println("Target=" + target);
 
 		if (target.getClass() == Dailyreport.class) {
 
@@ -147,8 +141,6 @@ public class MyController {
 			NodeTree nodeHead = new NodeTree(0, "dbvnpt");
 			nodeHead = reportEmpDAO.createChildren(nodeHead);
 
-			System.out.println(nodeHead.getChildren());
-
 			String nodeTree = objectMapper.writeValueAsString(nodeHead);
 			JsonNode node3 = objectMapper.readValue(nodeTree, JsonNode.class);
 
@@ -179,13 +171,13 @@ public class MyController {
 		String saturday = dateFormat.format(cal.getTime());
 
 		ObjectMapper objectMapper = new ObjectMapper();
-
+		
+		
 		List<Weeklyplan> list = reportEmpDAO.listWeeklyPlan(user.getUsername(), monday, saturday);
-
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i).getDescription().length());
-		}
-
+		if(!this.username.equals(user.getUsername().toString())){
+			list = reportEmpDAO.listWeeklyPlanChild(user.getUsername(), monday, saturday,"PUB");
+		} 
+		
 		ArrayNode listData = objectMapper.valueToTree(list);
 		
 		String lstStr = listData.toString();
@@ -246,7 +238,6 @@ public class MyController {
 
 		// Sau khi user login thanh cong se co principal
 		this.username = principal.getName();
-		System.out.println("username:" + this.username);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
 		String date = dateFormat.format(cal.getTime());
@@ -259,7 +250,6 @@ public class MyController {
 	@RequestMapping(value = "/leader", method = RequestMethod.GET)
 	public String leaderPage(Model model, Principal principal) {
 		this.username = principal.getName();
-		System.out.println("username:" + this.username);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
 		String date = dateFormat.format(cal.getTime());
@@ -271,7 +261,6 @@ public class MyController {
 	@RequestMapping(value = "/districtDirector", method = RequestMethod.GET)
 	public String districtDirectorPage(Model model, Principal principal) {
 		this.username = principal.getName();
-		System.out.println("username:" + this.username);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
 		String date = dateFormat.format(cal.getTime());
@@ -281,7 +270,6 @@ public class MyController {
 	@RequestMapping(value = "/provinceDirector", method = RequestMethod.GET)
 	public String adminPage(Model model, Principal principal) {
 		this.username = principal.getName();
-		System.out.println("username:" + this.username);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar cal = Calendar.getInstance();
 		String date = dateFormat.format(cal.getTime());
@@ -309,8 +297,6 @@ public class MyController {
 
 		String returnText = "savereport";
 
-		System.out.println("CCC" + result.getFieldValue("date"));
-
 		ObjectMapper mapper = new ObjectMapper();
 
 		String jsonInString = "{\"name\":\"mkyong\",\"salary\":7500,\"skills\":[\"java\",\"python\"]}";
@@ -319,9 +305,9 @@ public class MyController {
 		try {
 
 			staff1 = mapper.readValue(jsonInString, Staff.class);
-
-			System.out.println(staff1);
-			System.out.println(jsonInString);
+//
+//			System.out.println(staff1);
+//			System.out.println(jsonInString);
 
 		} catch (JsonParseException e) {
 			// TODO Auto-generated catch block
@@ -342,8 +328,6 @@ public class MyController {
 	public String showReportFormHandler(Model model, Principal principal) {
 
 		this.username = principal.getName();
-		System.out.println("username:" + this.username);
-
 		Dailyreport dailyreport = new Dailyreport();
 
 		// List<Dailyreport> list = reportEmpDAO.listReport();
@@ -351,19 +335,11 @@ public class MyController {
 		if (list.size() > 0) {
 			dailyreport = list.get(list.size() - 1);
 
-			System.out.println(dailyreport.getStatus());
-
-			System.out.println(dailyreport.getDate());
-			System.out.println(dailyreport.getDatereport());
-
 			if (dailyreport.getStatus().equals("DONE")) {
 
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 				Calendar cal = Calendar.getInstance();
 				String date = dateFormat.format(cal.getTime());
-
-				System.out.println(date);
-				System.out.println(dailyreport.getDatereport().toString().trim());
 
 				if (date.equals(dailyreport.getDatereport())) {
 					dailyreport = new Dailyreport();
@@ -470,13 +446,6 @@ public class MyController {
 
 		List<ChildNode> listUser = reportEmpDAO.listUsers(this.username);
 
-		for (int i = 0; i < listUser.size(); i++) {
-			// List<Dailyreport> list =
-			// reportEmpDAO.listWeekReport(this.username,
-			// searchForm.getFromDate(), searchForm.getToDate());
-
-		}
-
 		List<String> strUsers = new ArrayList<String>();
 		List<ChildNode> users = reportEmpDAO.listUsers(this.username);
 
@@ -523,18 +492,6 @@ public class MyController {
 		String saturday = dateFormat.format(cal.getTime());
 
 		List<Weeklyplan> list = reportEmpDAO.listWeeklyPlan(this.username, monday, saturday);
-
-		for (int i = 0; i < list.size(); i++) {
-			System.out.println(list.get(i).getDate());
-			System.out.println(list.get(i).getDescription());
-			System.out.println(list.get(i).getDatecreateplan());
-			System.out.println(list.get(i).getLocation());
-			System.out.println(list.get(i).getNote());
-			System.out.println(list.get(i).getResult());
-
-		}
-
-		System.out.println("Size:" + list.size());
 
 		if (list.size() > 0) {
 			weeklyplan = list.get(list.size() - 1);
@@ -597,6 +554,22 @@ public class MyController {
 
 	}
 
+	@RequestMapping(value = "/weeklyplan", method = RequestMethod.POST, params = {
+			"sendPlan" }, produces = "text/html; charset=UTF-8")
+	public String sendWeekPlanFormHandlerPOST(HttpServletRequest request, Model model) {
+		
+		System.out.println("sendPlan");
+
+		for (String weeklyplanid : request.getParameterValues("weeklyplanid")) {
+			
+			System.out.println(weeklyplanid);
+			reportEmpDAO.sendWeeklyplan(Integer.parseInt(weeklyplanid),"PUB");
+
+		}
+
+		return "redirect:weeklyplan";
+	}
+	
 	// POST: Do Upload
 	// Get data from date to date
 	//
@@ -838,15 +811,6 @@ public class MyController {
 
 		List<Personalreport> list = reportEmpDAO.listPersonalReport(this.username, searchForm.getFromDate(),
 				searchForm.getToDate());
-
-		System.out.println(list.size());
-
-		for (int i = 0; i < list.size() - 1; i++) {
-
-			System.out.println(list.get(i).getUsername());
-			System.out.println(list.get(i).getPrepaidDevelop());
-			System.out.println(list.get(i).getPostpaidDevelop());
-		}
 
 		model.addAttribute("list", list);
 		model.addAttribute("searchForm", searchForm);

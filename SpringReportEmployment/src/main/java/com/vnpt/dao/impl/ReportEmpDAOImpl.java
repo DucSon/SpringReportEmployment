@@ -91,12 +91,26 @@ public List<ChildNode> listUsers (String userparent) {
 	public List<Weeklyplan> listWeeklyPlan(String username, String fromDate, String toDate) {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		System.out.println("username:"+ username);
 		Query query = session.createSQLQuery("CALL weekly_plan(:username, :fromdate, :todate)")
 				.addEntity(Weeklyplan.class).setParameter("username", username)
 				.setParameter("fromdate",fromDate)
 				.setParameter("todate", toDate);
 
+		List<Weeklyplan> abc = query.list();
+		return abc;
+		
+	};
+	
+	@SuppressWarnings("unchecked")
+	public List<Weeklyplan> listWeeklyPlanChild(String username, String fromDate, String toDate, String status) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query = session.createSQLQuery("CALL weekly_plan_child(:username, :fromdate, :todate, :status)")
+				.addEntity(Weeklyplan.class).setParameter("username", username)
+				.setParameter("fromdate",fromDate)
+				.setParameter("todate", toDate)
+				.setParameter("status", status);
+		
 		List<Weeklyplan> abc = query.list();
 		return abc;
 		
@@ -213,10 +227,8 @@ public List<ChildNode> listUsers (String userparent) {
 		weeklyplan.setDatecreateplan(date);
 		try {
 			
-			System.out.println("This datereport:"+weeklyplan.getDate());
 			Date datePlan = new SimpleDateFormat("MM/dd/yyyy").parse(weeklyplan.getDate());
 			String dateToWork = new SimpleDateFormat("yyyy-MM-dd").format(datePlan);
-			System.out.println(datePlan);
 			weeklyplan.setDate(dateToWork);
 
 		} catch (ParseException e) {
@@ -269,9 +281,7 @@ public List<ChildNode> listUsers (String userparent) {
 		dailyreport.setDate(date);
  
       Session session = this.sessionFactory.getCurrentSession();
- 
-      System.out.println("dailyreportId:"+dailyreport.getDailyReportId());
-      
+       
       session.saveOrUpdate(dailyreport);
 	  
   };
@@ -279,14 +289,24 @@ public List<ChildNode> listUsers (String userparent) {
   public void deleteWeeklyplan(int weeklyplanid) {
 
 	     Session session = this.sessionFactory.getCurrentSession();
-	     
-	      System.out.println("weeklyplanid"+ weeklyplanid);
-	      
+	     	      
 	      Weeklyplan weeklyplan = (Weeklyplan) session.load(Weeklyplan.class, weeklyplanid);
 	      session.delete(weeklyplan);
 
 	  return;
   };
+
+	public void sendWeeklyplan(int weeklyplanid, String status) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+
+		Query query = session.createSQLQuery("CALL send_weekly_plan(:weeklyplanid, :status)").addEntity(Hibernate.class)
+				.setParameter("weeklyplanid", weeklyplanid).setParameter("status", status);
+
+		query.executeUpdate();
+
+		return;
+	};
   
   public NodeTree createChildren(NodeTree parentNode) {
 	  
@@ -300,7 +320,6 @@ public List<ChildNode> listUsers (String userparent) {
 	  }
 	  
 	  parentNode.setChildren(children);
-	  System.out.println(parentNode);
 	  return parentNode;
 	  
   }

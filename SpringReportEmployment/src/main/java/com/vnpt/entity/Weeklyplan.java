@@ -14,6 +14,7 @@ public class Weeklyplan {
 	private String location;
 	private String result;
 	private String note;
+	private String status;
 	private String date;
 	private String time;
 	private String username;
@@ -91,6 +92,14 @@ public class Weeklyplan {
 	
 	public void setTime(String time) {
 		this.time = time;
+	}
+	
+	@Column(name = "STATUS")
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }
 
