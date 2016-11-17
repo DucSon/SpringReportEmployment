@@ -50,11 +50,56 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Weekly Plan</title>
 <script type="text/javascript">
+
+var startDate;
+var endDate;
+var startDateAfter;
+var endDateAfter;
+
 	$(function() {
 		$("#date").datepicker();
 		$('#time').timepicker({
 			'scrollDefault' : 'now'
 		});
+		
+
+		
+	    $('#week-picker').datepicker( {
+	        showOtherMonths: true,
+	        selectOtherMonths: true,
+	        onSelect: function(dateText, inst) { 
+	            var date = $(this).datepicker('getDate');
+	            startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
+	            endDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 6);
+	            var dateFormat = inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
+	            
+	            startDateAfter = $.datepicker.formatDate( dateFormat, startDate, inst.settings );
+	            endDateAfter = $.datepicker.formatDate( dateFormat, endDate, inst.settings );
+	            selectCurrentWeek();
+		        document.getElementById("week-picker").value =$.datepicker.formatDate( dateFormat, startDate, inst.settings)+" đến "+$.datepicker.formatDate( dateFormat, endDate, inst.settings );
+
+	        },
+	        beforeShowDay: function(date) {
+	            var cssClass = '';
+	            if(date >= startDate && date <= endDate)
+	                cssClass = 'ui-datepicker-current-day';
+	            return [true, cssClass];
+	        },
+	        onChangeMonthYear: function(year, month, inst) {
+	            selectCurrentWeek();
+	        }
+	    });
+	    
+	    var selectCurrentWeek = function() {
+	        window.setTimeout(function () {
+	            $('#week-picker').find('.ui-datepicker-current-day a').addClass('ui-state-active')
+	        }, 1);
+
+	    }
+	    
+	    
+	    $('#week-picker .ui-datepicker-calendar tr').live('mousemove', function() { $(this).find('td a').addClass('ui-state-hover'); });
+	    $('#week-picker .ui-datepicker-calendar tr').live('mouseleave', function() { $(this).find('td a').removeClass('ui-state-hover'); });
 	});
 	
 	$(document).ready(function(){
@@ -77,8 +122,12 @@
 	<a href="${pageContext.request.contextPath}/logout">Logout</a>
 	<div align="center">
 		<h1>Weekly Plan</h1>
-		<h2 align="left" style="width: 80%;">Kế hoạch chi tiết</h2>
-		<h3>Kế hoạch tuần từ:${monday} đến ${saturday}</h3>
+		<h2 align="left" style="width: 80%;">
+		Kế hoạch chi tiết
+		<br>
+		<label>Tuần: </label><input id="week-picker">
+		<button onclick="searchWeeklyplan();">Search</button>
+		</h2>
 		<form:form id="weeklyplan" modelAttribute="weeklyplan" method="POST"
 			action="${pageContext.request.contextPath}/weeklyplan">
 			<div>
@@ -146,6 +195,7 @@
 							<td></td>
 						</tr>
 						<tr>
+
 							<td>1</td>
 							<td><form:input path="date" value="${weeklyplan.date}"
 									style="width:100px;" /></td>
@@ -183,7 +233,10 @@
 		</form:form>
 	</div>
 	<script type="text/javascript">
-var data2 = ${managerTree};
+
+	
+	
+	var data2 = ${managerTree};
 
 	$("#evts")
 			.on(
@@ -248,6 +301,62 @@ var data2 = ${managerTree};
 					'data' : data2,
 				}
 			});
+	
+	var user;
+	searchWeeklyplan = function(){
+
+		user = 'thuydt';
+		var data2 = {
+				"username": user
+		};
+		
+		$.ajax({
+			url:'selectNode',
+			type:'GET',
+			data : data2,
+			contentType: "text/html; charset=UTF-8",
+			success: function(response) {
+
+				var jsonarray = JSON.parse(response);							
+				var rowlast= $('#table tr:last').index();
+				for(var i=0; i< rowlast+1;i++){
+					$('#table tr:first').remove();
+				}
+				
+				$("#table tbody")
+				.append ("<tr> <th style='width: 10%;'>Date</th>"
+				+ "<th style='width: 10%;'>Time</th>"
+				+ "<th style='width: 30%;'>Description</th>"
+				+ "<th style='width: 15%;'>Location</th>"
+				+ "<th style='width: 15%;'>Result</th>"
+				+ "<th style='width: 20%;'>Note</th>"
+				+ "<th style='width: 20%;'>Status</th>"
+				+ "<th><input type='checkbox' id='checkBoxAll'></th>");	
+				
+				for(var i =0;i< jsonarray.length;i++){
+					
+					$("#table")
+					.append ("<tr> <th style='width: 10%;'>"+jsonarray[i].date+"</td>"
+					+ "<td style='width: 10%;'>"+jsonarray[i].time+"</td>"
+					+ "<td style='width: 30%;'>"+jsonarray[i].description+"</td>"
+					+ "<td style='width: 15%;'>"+jsonarray[i].location+"</td>"
+					+ "<td style='width: 15%;'>"+jsonarray[i].result+"</td>"
+					+ "<td style='width: 20%;'>"+jsonarray[i].note+"</td>"
+					+ "<td style='width: 20%;'>"+jsonarray[i].status+"</td>"
+					+ "<td><input type='checkbox' class='chkCheckBoxId' value="+jsonarray[i].weeklyplanid+" name='weeklyplanid'></td>");	
+					
+				}
+			},
+			error : function(e) {
+				console.log("ERROR: ", e);
+				display(e);
+			},
+			done : function(e) {
+				console.log("DONE");
+			}
+		});	
+	};
+	
 	
 // 	load = function() {
 
