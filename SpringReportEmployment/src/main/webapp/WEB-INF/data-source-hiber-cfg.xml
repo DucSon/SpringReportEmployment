@@ -27,6 +27,8 @@
 				<value>com.vnpt.entity.User</value>
 				<value>com.vnpt.entity.ChildNode</value>
 				<value>com.vnpt.entity.Userroles</value>
+				<value>com.vnpt.entity.Asset</value>
+				<value>com.vnpt.entity.AssetForm</value>
 			</list>
 		</property>
 

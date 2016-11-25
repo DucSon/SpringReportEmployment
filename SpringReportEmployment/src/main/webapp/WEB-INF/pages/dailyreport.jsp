@@ -41,6 +41,8 @@
 		tuần</a>
 	<a href="${pageContext.request.contextPath}/weeklyplan">Kế hoạch
 		tuần</a>
+	<a href="${pageContext.request.contextPath}/assetmanager">Quản lý tài sản</a>
+	
 	<a href="${pageContext.request.contextPath}/logout">Logout</a>
 	<div align="center">
 		<h1>Report Form of Employment</h1>

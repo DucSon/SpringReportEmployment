@@ -53,16 +53,14 @@
 
 var startDate;
 var endDate;
-var startDateAfter;
-var endDateAfter;
+var startDateAfter="";
+var endDateAfter="";
 
 	$(function() {
 		$("#date").datepicker();
 		$('#time').timepicker({
 			'scrollDefault' : 'now'
 		});
-		
-
 		
 	    $('#week-picker').datepicker( {
 	        showOtherMonths: true,
@@ -72,7 +70,6 @@ var endDateAfter;
 	            startDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay());
 	            endDate = new Date(date.getFullYear(), date.getMonth(), date.getDate() - date.getDay() + 6);
 	            var dateFormat = inst.settings.dateFormat || $.datepicker._defaults.dateFormat;
-	            
 	            startDateAfter = $.datepicker.formatDate( dateFormat, startDate, inst.settings );
 	            endDateAfter = $.datepicker.formatDate( dateFormat, endDate, inst.settings );
 	            selectCurrentWeek();
@@ -94,9 +91,7 @@ var endDateAfter;
 	        window.setTimeout(function () {
 	            $('#week-picker').find('.ui-datepicker-current-day a').addClass('ui-state-active')
 	        }, 1);
-
 	    }
-	    
 	    
 	    $('#week-picker .ui-datepicker-calendar tr').live('mousemove', function() { $(this).find('td a').addClass('ui-state-hover'); });
 	    $('#week-picker .ui-datepicker-calendar tr').live('mouseleave', function() { $(this).find('td a').removeClass('ui-state-hover'); });
@@ -119,6 +114,7 @@ var endDateAfter;
 		cá nhân</a>
 	<a href="${pageContext.request.contextPath}/weeklyplan">Kế hoạch
 		tuần</a>
+	<a href="${pageContext.request.contextPath}/assetmanager">Quản lý tài sản</a>	
 	<a href="${pageContext.request.contextPath}/logout">Logout</a>
 	<div align="center">
 		<h1>Weekly Plan</h1>
@@ -126,7 +122,6 @@ var endDateAfter;
 		Kế hoạch chi tiết
 		<br>
 		<label>Tuần: </label><input id="week-picker">
-		<button onclick="searchWeeklyplan();">Search</button>
 		</h2>
 		<form:form id="weeklyplan" modelAttribute="weeklyplan" method="POST"
 			action="${pageContext.request.contextPath}/weeklyplan">
@@ -134,12 +129,12 @@ var endDateAfter;
 				<div id="treeview" align="left">
 					<table>
 						<tr>
-							<td style="width: 100px;">N/V lập kế hoạch:</td>
+							<td style="width: 100px;">N/V lập biểu mẫu:</td>
 							<td style="width: 100px;"><form:input path="username"
 									type="text" value="${weeklyplan.username}" style="width:100px;" /><br /></td>
 						</tr>
 						<tr>
-							<td>Ngày lập kế hoạch:</td>
+							<td>Ngày lập biểu mẫu:</td>
 							<td><input type="text" id="weeklyplan" name="weeklyplan"
 								value="${weeklyplan.date}" /></td>
 						</tr>
@@ -234,8 +229,6 @@ var endDateAfter;
 	</div>
 	<script type="text/javascript">
 
-	
-	
 	var data2 = ${managerTree};
 
 	$("#evts")
@@ -243,10 +236,14 @@ var endDateAfter;
 					"changed.jstree",
 					function(e, data) {
 						if (data.selected.length) {
-
 							var username = data.instance.get_node(data.selected[0]).text;
+							var monday = "";
+							var saturday ="";
+							
 							var data2 = {
-									"username": username
+									"username": username,
+									"monday": startDateAfter,
+									"saturday": endDateAfter 
 							};
 						
 						$.ajax({
@@ -301,62 +298,6 @@ var endDateAfter;
 					'data' : data2,
 				}
 			});
-	
-	var user;
-	searchWeeklyplan = function(){
-
-		user = 'thuydt';
-		var data2 = {
-				"username": user
-		};
-		
-		$.ajax({
-			url:'selectNode',
-			type:'GET',
-			data : data2,
-			contentType: "text/html; charset=UTF-8",
-			success: function(response) {
-
-				var jsonarray = JSON.parse(response);							
-				var rowlast= $('#table tr:last').index();
-				for(var i=0; i< rowlast+1;i++){
-					$('#table tr:first').remove();
-				}
-				
-				$("#table tbody")
-				.append ("<tr> <th style='width: 10%;'>Date</th>"
-				+ "<th style='width: 10%;'>Time</th>"
-				+ "<th style='width: 30%;'>Description</th>"
-				+ "<th style='width: 15%;'>Location</th>"
-				+ "<th style='width: 15%;'>Result</th>"
-				+ "<th style='width: 20%;'>Note</th>"
-				+ "<th style='width: 20%;'>Status</th>"
-				+ "<th><input type='checkbox' id='checkBoxAll'></th>");	
-				
-				for(var i =0;i< jsonarray.length;i++){
-					
-					$("#table")
-					.append ("<tr> <th style='width: 10%;'>"+jsonarray[i].date+"</td>"
-					+ "<td style='width: 10%;'>"+jsonarray[i].time+"</td>"
-					+ "<td style='width: 30%;'>"+jsonarray[i].description+"</td>"
-					+ "<td style='width: 15%;'>"+jsonarray[i].location+"</td>"
-					+ "<td style='width: 15%;'>"+jsonarray[i].result+"</td>"
-					+ "<td style='width: 20%;'>"+jsonarray[i].note+"</td>"
-					+ "<td style='width: 20%;'>"+jsonarray[i].status+"</td>"
-					+ "<td><input type='checkbox' class='chkCheckBoxId' value="+jsonarray[i].weeklyplanid+" name='weeklyplanid'></td>");	
-					
-				}
-			},
-			error : function(e) {
-				console.log("ERROR: ", e);
-				display(e);
-			},
-			done : function(e) {
-				console.log("DONE");
-			}
-		});	
-	};
-	
 	
 // 	load = function() {
 

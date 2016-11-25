@@ -2,6 +2,8 @@ package com.vnpt.dao;
 
 import java.util.List;
 
+import com.vnpt.entity.Asset;
+import com.vnpt.entity.AssetForm;
 import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
 import com.vnpt.entity.NodeTree;
@@ -19,6 +21,10 @@ public interface ReportEmpDAO {
 	  public List<Weekreport> listWeekReport(String username, String fromDate, String toDate);
 	
 	  public List<Weeklyplan> listWeeklyPlan(String username, String fromDate, String toDate);
+	 
+	  public List<AssetForm> listAsset(String username);
+	  
+	  public List<AssetForm> listAssetChild(String username, String status);
 	  
 	  public List<Weeklyplan> listWeeklyPlanChild(String username, String fromDate, String toDate, String status);
 	  
@@ -33,6 +39,12 @@ public interface ReportEmpDAO {
 	  public void createWeeklyPlan(Weeklyplan weeklyplan);
 	  
 	  public void deleteWeeklyplan(int weeklyplanid);
+	  
+	  public void createAsset(AssetForm assetForm);
+	  
+	  public void deleteAsset(int assetid);
+	  
+	  public void sendAsset(int assetid, String status);
 	  
 	  public void updateReport(Dailyreport dailyreport);
 	  

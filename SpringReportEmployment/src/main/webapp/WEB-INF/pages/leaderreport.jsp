@@ -28,6 +28,8 @@
 		cá nhân</a>
 	<a href="${pageContext.request.contextPath}/weeklyplan">Kế hoạch
 		tuần</a>
+	<a href="${pageContext.request.contextPath}/assetmanager">Quản lý tài sản</a>
+		
 	<a href="${pageContext.request.contextPath}/logout">Logout</a>
 	<h1>Báo Cáo Cá Nhân</h1>
 	<h3>Nhan vien:${searchForm.username}</h3>

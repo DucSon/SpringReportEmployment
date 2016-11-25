@@ -28,6 +28,7 @@
 		cá nhân</a>
 	<a href="${pageContext.request.contextPath}/weeklyplan">Kế hoạch
 		tuần</a>
+	<a href="${pageContext.request.contextPath}/assetmanager">Quản lý tài sản</a>	
 	<a href="${pageContext.request.contextPath}/logout">Logout</a>
 	<h1>Report of Employment</h1>
 	<h3>Nhan vien:${dailyreport.username}</h3>

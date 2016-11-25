@@ -11,6 +11,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import com.vnpt.dao.ReportEmpDAO;
+import com.vnpt.entity.Asset;
+import com.vnpt.entity.AssetForm;
 import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
 import com.vnpt.entity.Hibernate;
@@ -91,29 +93,69 @@ public List<ChildNode> listUsers (String userparent) {
 	public List<Weeklyplan> listWeeklyPlan(String username, String fromDate, String toDate) {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		Query query = session.createSQLQuery("CALL weekly_plan(:username, :fromdate, :todate)")
-				.addEntity(Weeklyplan.class).setParameter("username", username)
-				.setParameter("fromdate",fromDate)
-				.setParameter("todate", toDate);
-
-		List<Weeklyplan> abc = query.list();
-		return abc;
-		
+		Query query;
+		try {
+			query = session.createSQLQuery("CALL weekly_plan(:username, :fromdate, :todate)")
+					.addEntity(Weeklyplan.class).setParameter("username", username)
+					.setParameter("fromdate",convertDateFormat(fromDate))
+					.setParameter("todate", convertDateFormat(toDate));
+			List<Weeklyplan> abc = query.list();
+			return abc;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	};
+	@SuppressWarnings("unchecked")
+	public List<AssetForm> listAsset(String username) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query;
+			query = session.createSQLQuery("CALL list_Asset(:username)")
+					.addEntity(AssetForm.class).setParameter("username", username);
+					
+			List<AssetForm> abc = query.list();
+			return abc;
+
+	};
+	
+	@SuppressWarnings("unchecked")
+	public List<AssetForm> listAssetChild(String username, String status) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+		Query query;
+		
+			query = session.createSQLQuery("CALL list_Asset_child(:username, :status)")
+					.addEntity(AssetForm.class).setParameter("username", username)
+					.setParameter("status", status);
+			List<AssetForm> abc = query.list();
+			return abc;
+
+	};
+	
+	
 	
 	@SuppressWarnings("unchecked")
 	public List<Weeklyplan> listWeeklyPlanChild(String username, String fromDate, String toDate, String status) {
 
 		Session session = this.sessionFactory.getCurrentSession();
-		Query query = session.createSQLQuery("CALL weekly_plan_child(:username, :fromdate, :todate, :status)")
-				.addEntity(Weeklyplan.class).setParameter("username", username)
-				.setParameter("fromdate",fromDate)
-				.setParameter("todate", toDate)
-				.setParameter("status", status);
+		Query query;
+		try {
+			query = session.createSQLQuery("CALL weekly_plan_child(:username, :fromdate, :todate, :status)")
+					.addEntity(Weeklyplan.class).setParameter("username", username)
+					.setParameter("fromdate",convertDateFormat(fromDate))
+					.setParameter("todate", convertDateFormat(toDate))
+					.setParameter("status", status);
+			List<Weeklyplan> abc = query.list();
+			return abc;
 		
-		List<Weeklyplan> abc = query.list();
-		return abc;
-		
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+
 	};
 	
 	
@@ -169,6 +211,31 @@ public List<ChildNode> listUsers (String userparent) {
           return 0;
       }
       return maxDailyReportId;
+  }
+  
+  public Integer getMaxAssetId() {
+      Session session = this.sessionFactory.getCurrentSession();
+      String sql = "Select max(a.assetid) as maxAssetId  from Asset a";
+      Query query = session.createQuery(sql);
+      Integer maxAssetId = (Integer) query.uniqueResult();
+      if (maxAssetId == null) {
+          return 0;
+      }
+      return maxAssetId;
+  }
+  
+  public Integer getUserId(String username) {
+      Session session = this.sessionFactory.getCurrentSession();
+      String sql = "CALL getUserid(:username)";
+      
+      Query query = session.createSQLQuery(sql).addEntity(User.class).setParameter("username", username);
+      @SuppressWarnings("unchecked")
+	List<User> list = query.list();
+      
+      if(!list.isEmpty())
+    	  return list.get(0).getUserid();
+      else 
+      return 0;
   }
  
   public void createNewReport(String username, String date, Integer prepaidDevelop) {
@@ -242,6 +309,55 @@ public List<ChildNode> listUsers (String userparent) {
 	  
   }
   
+  public void createAsset(AssetForm assetForm) {
+	  
+	  Integer assetid = getMaxAssetId()+1;
+	  Integer userid = this.getUserId(assetForm.getUsername()) ;
+	  
+	  Asset asset = new Asset();
+	  
+	  asset.setAssetid(assetid);
+	  asset.setUserid(userid);
+	  asset.setAssetname(assetForm.getAssetname());
+	  asset.setNsx(assetForm.getNsx());
+	  asset.setHsd(assetForm.getHsd());
+	  asset.setLocation(assetForm.getLocation());
+	  asset.setPrice(assetForm.getPrice());
+	  asset.setImage(assetForm.getImage());
+	  asset.setStatus("PRI");
+	  asset.setStatusasset(assetForm.getStatusasset());
+	  asset.setNote(assetForm.getNote());
+//			  assetid, 
+//			  userid, 
+//			  assetForm.getAssetname(), 
+//			  assetForm.getNsx(), 
+//			  assetForm.getHsd(), 
+//			  assetForm.getLocation(), 
+//			  assetForm.getPrice(), 
+//			  assetForm.getImage(), 
+//			  "PRI", 
+//			  assetForm.getStatusasset(), 
+//			  assetForm.getNote());
+	  
+	  asset.setAssetid(assetid);
+      Session session = this.sessionFactory.getCurrentSession();
+
+      session.persist(asset);
+  
+  
+  }
+  
+  public void deleteAsset(int assetid) {
+
+	     Session session = this.sessionFactory.getCurrentSession();
+	     	      
+	      Asset asset = (Asset) session.load(Asset.class, assetid);
+	      session.delete(asset);
+
+	  return;
+};
+
+  
   public void createUser(User user){
 	  
 	  	user.setEnable(1);
@@ -307,7 +423,21 @@ public List<ChildNode> listUsers (String userparent) {
 
 		return;
 	};
+	
+	
+	public void sendAsset(int assetid, String status) {
+
+		Session session = this.sessionFactory.getCurrentSession();
+
+		Query query = session.createSQLQuery("CALL send_asset(:assetid, :status)").addEntity(Asset.class)
+				.setParameter("assetid", assetid).setParameter("status", status);
+
+		query.executeUpdate();
+
+		return;
+	};
   
+
   public NodeTree createChildren(NodeTree parentNode) {
 	  
 	  List<NodeTree> children = new ArrayList<NodeTree>();

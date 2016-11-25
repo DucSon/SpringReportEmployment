@@ -24,6 +24,8 @@ import com.vnpt.entity.User;
 import com.vnpt.entity.UserForm;
 import com.vnpt.entity.Weeklyplan;
 import com.vnpt.entity.Weekreport;
+import com.vnpt.entity.Asset;
+import com.vnpt.entity.AssetForm;
 import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
 import org.codehaus.jackson.JsonNode;
@@ -42,6 +44,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
@@ -161,22 +164,48 @@ public class MyController {
 	}
 
 	@RequestMapping(value = "/selectNode", method = RequestMethod.GET, produces = "text/html; charset=UTF-8")
-	public @ResponseBody byte[] selectNode(User user) {
+	public @ResponseBody byte[] selectNode (User user, @RequestParam("monday") String monday,@RequestParam("saturday") String saturday) {
 
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//		String startDateAfter = ((User) principal).getStartDateAfter();
+		
+//		System.out.println(monday);
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		String monday = dateFormat.format(cal.getTime());
-		cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-		String saturday = dateFormat.format(cal.getTime());
+
+		if (monday.isEmpty()) {
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+			monday = dateFormat.format(cal.getTime());
+		}
+		if (saturday.isEmpty()) {
+			cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+			saturday = dateFormat.format(cal.getTime());
+		}
 
 		ObjectMapper objectMapper = new ObjectMapper();
-		
-		
 		List<Weeklyplan> list = reportEmpDAO.listWeeklyPlan(user.getUsername(), monday, saturday);
 		if(!this.username.equals(user.getUsername().toString())){
 			list = reportEmpDAO.listWeeklyPlanChild(user.getUsername(), monday, saturday,"PUB");
 		} 
+		
+		ArrayNode listData = objectMapper.valueToTree(list);
+		
+		String lstStr = listData.toString();
+		byte[] byteText = lstStr.getBytes(Charset.forName("UTF-8"));
+		
+		return byteText;
+
+	}
+	
+	@RequestMapping(value = "/selectNodeAsset", method = RequestMethod.GET, produces = "text/html; charset=UTF-8")
+	public @ResponseBody byte[] selectNodeAsset (User user) {
+
+//		String startDateAfter = ((User) principal).getStartDateAfter();
+
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<AssetForm> list = reportEmpDAO.listAsset(user.getUsername());
+		if(!this.username.equals(user.getUsername().toString())){
+			list = reportEmpDAO.listAssetChild(user.getUsername(),"PUB");
+		}
 		
 		ArrayNode listData = objectMapper.valueToTree(list);
 		
@@ -484,7 +513,7 @@ public class MyController {
 		this.username = principal.getName();
 		Weeklyplan weeklyplan = new Weeklyplan();
 
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		String monday = dateFormat.format(cal.getTime());
@@ -526,6 +555,102 @@ public class MyController {
 		}
 		return "weeklyplan";
 	}
+	
+	@RequestMapping(value = "/assetmanager", method = RequestMethod.GET)
+	public String getAsset(Model model, Principal principal) {
+
+		System.out.println("This is assetmanager");
+		this.username = principal.getName();
+		AssetForm assetform = new AssetForm();
+
+		List<AssetForm> list = reportEmpDAO.listAsset(this.username);
+
+		if (list.size() > 0) {
+			assetform = list.get(list.size() - 1);
+		}
+
+		assetform.setUsername(this.username);
+		model.addAttribute("list", list);
+		model.addAttribute("asset", assetform);
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		try {
+
+			NodeTree nodeHead = new NodeTree(0, this.username);
+			nodeHead = reportEmpDAO.createChildren(nodeHead);
+
+			String nodeTree = objectMapper.writeValueAsString(nodeHead);
+			JsonNode node3 = objectMapper.readValue(nodeTree, JsonNode.class);
+
+			model.addAttribute("managerTree", node3.toString());
+
+		} catch (JsonParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "assetmanager";
+	}
+	
+	@RequestMapping(value = "/assetmanager", method = RequestMethod.POST, params = {
+	"saveAsset" }, produces = "text/html; charset=UTF-8")
+public String saveAssetFormHandlerPOST(HttpServletRequest request, Model model,
+	@ModelAttribute("Asset") AssetForm assetform) {
+		assetform.setUsername(username);
+reportEmpDAO.createAsset(assetform);
+
+return this.doShowAsset(request, model, assetform);
+}
+	
+	private String doShowAsset(HttpServletRequest request, Model model, AssetForm asset) {
+
+		List<AssetForm> list = reportEmpDAO.listAsset(this.username);
+		model.addAttribute("list", list);
+		model.addAttribute("asset", asset);
+		return "assetmanager";
+	}
+
+
+@RequestMapping(value = "/assetmanager", method = RequestMethod.POST, params = { "deleteAsset" })
+public String deleteAssetFormHandlerPOST(HttpServletRequest request, Model model) {
+
+System.out.println("deleteAsset");
+
+for (String assetid : request.getParameterValues("assetid")) {
+
+	System.out.println(assetid);
+
+	reportEmpDAO.deleteAsset(Integer.parseInt(assetid));
+
+}
+
+return "redirect:assetmanager";
+
+}
+
+	@RequestMapping(value = "/assetmanager", method = RequestMethod.POST, params = {
+			"sendAsset" }, produces = "text/html; charset=UTF-8")
+	public String sendAssetFormHandlerPOST(HttpServletRequest request, Model model) {
+
+		System.out.println("sendAsset");
+
+		for (String assetid : request.getParameterValues("assetid")) {
+
+			System.out.println(assetid);
+			reportEmpDAO.sendAsset(Integer.parseInt(assetid), "PUB");
+
+		}
+
+		return "redirect:assetmanager";
+	}
+	
 
 	@RequestMapping(value = "/weeklyplan", method = RequestMethod.POST, params = {
 			"savePlan" }, produces = "text/html; charset=UTF-8")
@@ -739,7 +864,7 @@ public class MyController {
 
 	private String doShowWeeklyplan(HttpServletRequest request, Model model, Weeklyplan weeklyplan) {
 
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		String monday = dateFormat.format(cal.getTime());
