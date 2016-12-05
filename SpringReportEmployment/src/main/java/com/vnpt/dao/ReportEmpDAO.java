@@ -2,6 +2,7 @@ package com.vnpt.dao;
 
 import java.util.List;
 
+import com.vnpt.entity.Asset;
 import com.vnpt.entity.AssetForm;
 import com.vnpt.entity.AssetInfoForm;
 import com.vnpt.entity.ChildNode;
@@ -55,8 +56,10 @@ public interface ReportEmpDAO {
 
 	  public NodeTree createChildren(NodeTree parentNode);
 	  
-	  public void createUser(User user);
+	public void createUser(User user);
 
-	public Product findProduct(String code);
+	// public Product findProduct(String code);
+
+	public Asset findAsset(int assetid);
 	  
 	}

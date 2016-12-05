@@ -71,18 +71,17 @@ var endDateAfter="";
 		<form:form id="asset" modelAttribute="assetInfoForm" enctype="multipart/form-data" method="POST"
 			action="${pageContext.request.contextPath}/assetmanager">
 			<div>
-			 <img src="${pageContext.request.contextPath}/productImage?code=S004" width="100"/>
 				<div id="treeview" align="left">
 					<table>
 						<tr>
 							<td style="width: 100px;">N/V quản lý tài sản:</td>
 							<td style="width: 100px;"><form:input path="username"
-									type="text" value="${asset.username}" style="width:100px;" /><br /></td>
+									type="text" value="${assetInfoForm.username}" style="width:100px;" /><br /></td>
 						</tr>
 						<tr>
 							<td>Ngày thêm tài sản:</td>
 							<td><input type="text" id="asset" name="asset"
-								value="${asset.nsx}" /></td>
+								value="${assetInfoForm.nsx}" /></td>
 						</tr>
 						<tr>
 							<td>Nhân viên</td>
@@ -114,7 +113,7 @@ var endDateAfter="";
 									<td style="width: 10%;">${listAsset.hsd}</td>
 									<td style="width: 10%;">${listAsset.location}</td>
 									<td style="width: 7%;">${listAsset.price}</td>
-									<td style="width: 20%;">${listAsset.image}</td>
+									<td style="width: 20%;"><img src='${pageContext.request.contextPath}/assetImage?assetid="+${listAsset.assetid}+"' width='100'/></td>
 									<td style="width: 10%;">${listAsset.statusasset}</td>
 									<td style="width: 5%;">${listAsset.status}</td>
 									<td style="width: 17%;">${listAsset.note}</td>
@@ -144,21 +143,21 @@ var endDateAfter="";
 							<td></td>
 						</tr>
 						<tr>
-							<td><form:input path="assetname" value="${asset.assetname}"
+							<td><form:input path="assetname" value="${assetInfoForm.assetname}"
 									style="width:170px;" /></td>
-							<td><form:input path="nsx" value="${asset.nsx}"
+							<td><form:input path="nsx" value="${assetInfoForm.nsx}"
 									style="width:100px;" /></td>
-							<td><form:input path="hsd" value="${asset.hsd}"
+							<td><form:input path="hsd" value="${assetInfoForm.hsd}"
 									style="width:100px;" /></td>
-							<td><form:input path="location" value="${asset.location}"
+							<td><form:input path="location" value="${assetInfoForm.location}"
 									style="width:100px;"/></td>
-							<td><form:input path="price" value="${asset.price}"
+							<td><form:input path="price" value="${assetInfoForm.price}"
 									style="width:70px;" /></td>
-							<td><form:input type="file" path="fileData" value="${asset.fileData}"
+							<td><form:input type="file" path="fileData" value="${assetInfoForm.fileData}"
 									style="width:200px;" /></td>	
 							<td><form:input path="statusasset"
-									value="${asset.statusasset}" style="width:100px;" /></td>		
-							<td><form:input path="note" value="${asset.note}"
+									value="${assetInfoForm.statusasset}" style="width:100px;" /></td>		
+							<td><form:input path="note" value="${assetInfoForm.note}"
 									style="width:170px;" /></td>
 						</tr>
 						
@@ -235,12 +234,12 @@ $("#evts")
 									+ "<td style='width: 10%;'>"+jsonarray[i].hsd+"</td>"
 									+ "<td style='width: 10%;'>"+jsonarray[i].location+"</td>"
 									+ "<td style='width: 7%;'>"+jsonarray[i].price+"</td>"
-									+ "<td style='width: 20%;'>"+jsonarray[i].image+"</td>"
+									+ "<td style='width: 20%;'><img src='${pageContext.request.contextPath}/assetImage?assetid="+jsonarray[i].assetid+"' width='100'/></td>"
 									+ "<td style='width: 10%;'>"+jsonarray[i].statusasset+"</td>"
 									+ "<td style='width: 5%;'>"+jsonarray[i].status+"</td>"
 									+ "<td style='width: 17%;'>"+jsonarray[i].note+"</td>"
 									+ "<td><input type='checkbox' class='chkCheckBoxId' value="+jsonarray[i].assetid+" name='assetid'></td>");	
-									
+// 									<img src='${pageContext.request.contextPath}/assetImage?assetid=55' width='100'/>
 								}
 
 							},

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.vnpt.dao.DepartmentDAO;
 import com.vnpt.dao.ReportEmpDAO;
 import com.vnpt.entity.Department;
@@ -27,6 +26,7 @@ import com.vnpt.entity.User;
 import com.vnpt.entity.UserForm;
 import com.vnpt.entity.Weeklyplan;
 import com.vnpt.entity.Weekreport;
+import com.vnpt.entity.Asset;
 import com.vnpt.entity.AssetForm;
 import com.vnpt.entity.AssetInfoForm;
 import com.vnpt.entity.ChildNode;
@@ -49,6 +49,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -573,9 +574,52 @@ public class MyController {
 			assetform = list.get(list.size() - 1);
 		}
 
+		AssetInfoForm assetInfoForm = new AssetInfoForm();
+		
+		assetInfoForm.setAssetid(assetform.getAssetid());
+		assetInfoForm.setAssetname(assetform.getAssetname());
+		assetInfoForm.setUserid(assetform.getUserid());
+		assetInfoForm.setNsx(assetform.getNsx());
+		assetInfoForm.setHsd(assetform.getHsd());
+		assetInfoForm.setLocation(assetform.getLocation());
+		assetInfoForm.setNote(assetform.getNote());
+		assetInfoForm.setPrice(assetform.getPrice());
+		assetInfoForm.setStatus(assetform.getStatus());
+		assetInfoForm.setStatusasset(assetform.getStatusasset());
+		assetInfoForm.setUsername(assetform.getUsername());
+		assetInfoForm.setImage(assetform.getImage());
+		
+		
+//		private String assetname;
+//		private int assetid;
+//		private int userid;
+//		private String username;
+//		private String nsx;
+//		private String hsd;
+//		private String location;
+//		private int price;
+//		private byte[] image;
+//		private String status;
+//		private String statusasset;
+//		private String note;
+		
+//		private String assetname;
+//		private int assetid;
+//		private int userid;
+//		private String username;
+//		private String nsx;
+//		private String hsd;
+//		private String location;
+//		private int price;
+//		private byte[] image;
+//		private String status;
+//		private String statusasset;
+//		private String note;
+//	    private CommonsMultipartFile fileData;
+		
 		assetform.setUsername(this.username);
 		model.addAttribute("list", list);
-		model.addAttribute("asset", assetform);
+		model.addAttribute("assetInfoForm", assetInfoForm);
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 
@@ -599,11 +643,9 @@ public class MyController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
-		Product product = reportEmpDAO.findProduct("S004");
 		
 		return "assetmanager";
-	}
+	} 
 	
 	@RequestMapping(value = "/assetmanager", method = RequestMethod.POST, params = {
 	"saveAsset" })
@@ -623,19 +665,38 @@ return this.doShowAsset(request, model, assetInfoForm);
 		return "assetmanager";
 	}
 	
-    @RequestMapping(value = { "/productImage" }, method = RequestMethod.GET)
-    public void productImage(HttpServletRequest request, HttpServletResponse response, Model model,
-            @RequestParam("code") String code) throws IOException {
-        Product product = null;
+//    @RequestMapping(value = { "/productImage" }, method = RequestMethod.GET)
+//    public void productImage(HttpServletRequest request, HttpServletResponse response, Model model,
+//            @RequestParam("code") String code) throws IOException {
+//        Product product = null;
+//        
+//        if (code != null) {
+////            product = this.reportEmpDAO.findProduct(code);
+//        }
+//        
+//        if (product != null && product.getImage() != null) {
+//            response.setContentType("image/jpeg, image/jpg, image/png, image/gif");
+//            response.getOutputStream().write(product.getImage());
+//            product.getImage();
+//        }
+//        
+//        response.getOutputStream().close();
+//        
+//    }
+//    
+    @RequestMapping(value = { "/assetImage" }, method = RequestMethod.GET)
+    public void assetImage(HttpServletRequest request, HttpServletResponse response, Model model,
+            @RequestParam("assetid") int assetid) throws IOException {
+        Asset asset = null;
         
-        if (code != null) {
-            product = this.reportEmpDAO.findProduct(code);
+        if (assetid != 0) {
+        	asset = this.reportEmpDAO.findAsset(assetid);
         }
         
-        if (product != null && product.getImage() != null) {
+        if (asset != null && asset.getImage() != null) {
             response.setContentType("image/jpeg, image/jpg, image/png, image/gif");
-            response.getOutputStream().write(product.getImage());
-            product.getImage();
+            response.getOutputStream().write(asset.getImage());
+            asset.getImage();
         }
         
         response.getOutputStream().close();

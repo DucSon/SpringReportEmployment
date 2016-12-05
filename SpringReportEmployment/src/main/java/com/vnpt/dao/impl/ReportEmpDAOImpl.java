@@ -329,8 +329,7 @@ public List<ChildNode> listUsers (String userparent) {
 	  asset.setHsd(assetInfoForm.getHsd());
 	  asset.setLocation(assetInfoForm.getLocation());
 	  asset.setPrice(assetInfoForm.getPrice());
-	  asset.setImage(assetInfoForm.getImage());
-	  
+	  asset.setImage(assetInfoForm.getFileData().getBytes());
 	  asset.setStatus("PRI");
 	  asset.setStatusasset(assetInfoForm.getStatusasset());
 	  asset.setNote(assetInfoForm.getNote());
@@ -461,14 +460,14 @@ public List<ChildNode> listUsers (String userparent) {
 	  
   }
 
-public Product findProduct(String code) {
+public Asset findAsset(int assetid) {
     Session session = sessionFactory.getCurrentSession();
-    Criteria crit = session.createCriteria(Product.class);
-    crit.add(Restrictions.eq("code", code));
+    Criteria crit = session.createCriteria(Asset.class);
+    crit.add(Restrictions.eq("assetid", assetid));
     
-    Product product = (Product) crit.uniqueResult();
+    Asset asset = (Asset) crit.uniqueResult();
     
-    return product;
+    return asset;
 }
   
  
