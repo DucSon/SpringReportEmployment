@@ -7,17 +7,23 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Restrictions;
+
 import com.vnpt.dao.ReportEmpDAO;
 import com.vnpt.entity.Asset;
 import com.vnpt.entity.AssetForm;
+import com.vnpt.entity.AssetInfoForm;
 import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
 import com.vnpt.entity.Hibernate;
 import com.vnpt.entity.NodeTree;
 import com.vnpt.entity.Personalreport;
+import com.vnpt.entity.Product;
 import com.vnpt.entity.User;
 import com.vnpt.entity.Userroles;
 import com.vnpt.entity.Weeklyplan;
@@ -49,7 +55,7 @@ public List<Dailyreport> listReport(String username) {
       List<Dailyreport> list = session.createQuery("from Dailyreport where username='"+username+"'").list();
       return list;
   }
-  
+
   @SuppressWarnings("unchecked")
 public List<ChildNode> listUsers (String userparent) {
 	  
@@ -309,24 +315,25 @@ public List<ChildNode> listUsers (String userparent) {
 	  
   }
   
-  public void createAsset(AssetForm assetForm) {
+  public void createAsset(AssetInfoForm assetInfoForm) {
 	  
 	  Integer assetid = getMaxAssetId()+1;
-	  Integer userid = this.getUserId(assetForm.getUsername()) ;
+	  Integer userid = this.getUserId(assetInfoForm.getUsername()) ;
 	  
 	  Asset asset = new Asset();
 	  
 	  asset.setAssetid(assetid);
 	  asset.setUserid(userid);
-	  asset.setAssetname(assetForm.getAssetname());
-	  asset.setNsx(assetForm.getNsx());
-	  asset.setHsd(assetForm.getHsd());
-	  asset.setLocation(assetForm.getLocation());
-	  asset.setPrice(assetForm.getPrice());
-	  asset.setImage(assetForm.getImage());
+	  asset.setAssetname(assetInfoForm.getAssetname());
+	  asset.setNsx(assetInfoForm.getNsx());
+	  asset.setHsd(assetInfoForm.getHsd());
+	  asset.setLocation(assetInfoForm.getLocation());
+	  asset.setPrice(assetInfoForm.getPrice());
+	  asset.setImage(assetInfoForm.getImage());
+	  
 	  asset.setStatus("PRI");
-	  asset.setStatusasset(assetForm.getStatusasset());
-	  asset.setNote(assetForm.getNote());
+	  asset.setStatusasset(assetInfoForm.getStatusasset());
+	  asset.setNote(assetInfoForm.getNote());
 //			  assetid, 
 //			  userid, 
 //			  assetForm.getAssetname(), 
@@ -453,6 +460,16 @@ public List<ChildNode> listUsers (String userparent) {
 	  return parentNode;
 	  
   }
+
+public Product findProduct(String code) {
+    Session session = sessionFactory.getCurrentSession();
+    Criteria crit = session.createCriteria(Product.class);
+    crit.add(Restrictions.eq("code", code));
+    
+    Product product = (Product) crit.uniqueResult();
+    
+    return product;
+}
   
  
 }

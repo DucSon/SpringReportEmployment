@@ -1,18 +1,7 @@
 package com.vnpt.entity;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.SecondaryTable;
-import javax.persistence.Table;
-
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-@Entity
-@Table(name = "ASSET")
-@SecondaryTable(name="USERS", pkJoinColumns={@PrimaryKeyJoinColumn(name = "user_id")})
-public class AssetForm {
+public class AssetInfoForm {
 
 	private String assetname;
 	private int assetid;
@@ -26,39 +15,39 @@ public class AssetForm {
 	private String status;
 	private String statusasset;
 	private String note;
+    private CommonsMultipartFile fileData;
 
-	public AssetForm(){
+	public AssetInfoForm(){
 	}
-	
-	@Column(name = "NOTE", length = 200)
+
 	public String getNote() {
 		return note;
 	}
 	public void setNote(String note) {
 		this.note = note;
 	}
-	@Column(name = "STATUS", length = 50)
+
 	public String getStatus() {
 		return status;
 	}
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	@Column(name = "IMAGE")
+
 	public byte[]  getImage() {
 		return image;
 	}
 	public void setImage(byte[]  image) {
 		this.image = image;
 	}
-	@Column(name = "LOCATION", length = 50)
+
 	public String getLocation() {
 		return location;
 	}
 	public void setLocation(String location) {
 		this.location = location;
 	}
-	@Column(name = "NSX", length = 50)
+
 	public String getNsx() {
 		return nsx;
 	}
@@ -66,8 +55,6 @@ public class AssetForm {
 		this.nsx = nsx;
 	}	
 	
-	@Id
-	@Column(name = "ASSETID", length = 6)
 	public int getAssetid() {
 		return assetid;
 	}
@@ -75,29 +62,27 @@ public class AssetForm {
 		this.assetid = assetid;
 	}
 	
-	@Column(name = "ASSETNAME", length = 50)
 	public String getAssetname() {
 		return assetname;
 	}
 	public void setAssetname(String assetname) {
 		this.assetname = assetname;
 	}
-	
-	@Column(name = "USERID", length = 6)
+
 	public int getUserid() {
 		return userid;
 	}
 	public void setUserid(int userid) {
 		this.userid = userid;
 	}
-	@Column(name = "HSD", length = 200)
+
 	public String getHsd() {
 		return hsd;
 	}
 	public void setHsd(String hsd) {
 		this.hsd = hsd;
 	}
-	@Column(name = "PRICE", length = 200)
+
 	public int getPrice() {
 		return price;
 	}
@@ -105,7 +90,6 @@ public class AssetForm {
 		this.price = price;
 	}
 	
-	@Column(name = "USERNAME", length = 200)
 	public String getUsername() {
 		return username;
 	}
@@ -114,13 +98,20 @@ public class AssetForm {
 		this.username = username;
 	}
 	
-	@Column(name = "STATUSASSET", length = 50)
 	public String getStatusasset() {
 		return statusasset;
 	}
 
 	public void setStatusasset(String statusasset) {
 		this.statusasset = statusasset;
+	}
+
+	public CommonsMultipartFile getFileData() {
+		return fileData;
+	}
+
+	public void setFileData(CommonsMultipartFile fileData) {
+		this.fileData = fileData;
 	}
 
 }

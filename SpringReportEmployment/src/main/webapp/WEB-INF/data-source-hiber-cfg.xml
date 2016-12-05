@@ -29,6 +29,7 @@
 				<value>com.vnpt.entity.Userroles</value>
 				<value>com.vnpt.entity.Asset</value>
 				<value>com.vnpt.entity.AssetForm</value>
+				<value>com.vnpt.entity.Product</value>
 			</list>
 		</property>
 

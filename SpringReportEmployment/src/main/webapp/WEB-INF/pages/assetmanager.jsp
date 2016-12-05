@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 	
-	
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <link rel="stylesheet"
@@ -61,17 +60,18 @@ var endDateAfter="";
 		cá nhân</a>
 	<a href="${pageContext.request.contextPath}/weeklyplan">Kế hoạch
 		tuần</a>
-	<a href="${pageContext.request.contextPath}/assetmanager">Quản lý tài sản</a>	
+	<a href="${pageContext.request.contextPath}/assetmanager">Quản lý tài sản</a>
 	<a href="${pageContext.request.contextPath}/logout">Logout</a>
 	<div align="center">
-		<h1>Assets Managerment</h1>
+		<h1>Assets Management</h1>
 		<h2 align="left" style="width: 80%;">
 		Danh sách và trạng thái
 		<br>
 		</h2>
-		<form:form id="asset" modelAttribute="asset" method="POST"
+		<form:form id="asset" modelAttribute="assetInfoForm" enctype="multipart/form-data" method="POST"
 			action="${pageContext.request.contextPath}/assetmanager">
 			<div>
+			 <img src="${pageContext.request.contextPath}/productImage?code=S004" width="100"/>
 				<div id="treeview" align="left">
 					<table>
 						<tr>
@@ -153,14 +153,15 @@ var endDateAfter="";
 							<td><form:input path="location" value="${asset.location}"
 									style="width:100px;"/></td>
 							<td><form:input path="price" value="${asset.price}"
-									style="width:70px;"/></td>
-							<td><form:input path="image" value="${asset.image}"
-									style="width:150px;"/></td>		
+									style="width:70px;" /></td>
+							<td><form:input type="file" path="fileData" value="${asset.fileData}"
+									style="width:200px;" /></td>	
 							<td><form:input path="statusasset"
 									value="${asset.statusasset}" style="width:100px;" /></td>		
 							<td><form:input path="note" value="${asset.note}"
 									style="width:170px;" /></td>
 						</tr>
+						
 					</table>
 					<div align="left">
 						<br>

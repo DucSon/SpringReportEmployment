@@ -2,12 +2,13 @@ package com.vnpt.dao;
 
 import java.util.List;
 
-import com.vnpt.entity.Asset;
 import com.vnpt.entity.AssetForm;
+import com.vnpt.entity.AssetInfoForm;
 import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
 import com.vnpt.entity.NodeTree;
 import com.vnpt.entity.Personalreport;
+import com.vnpt.entity.Product;
 import com.vnpt.entity.User;
 import com.vnpt.entity.Weeklyplan;
 import com.vnpt.entity.Weekreport;
@@ -40,7 +41,7 @@ public interface ReportEmpDAO {
 	  
 	  public void deleteWeeklyplan(int weeklyplanid);
 	  
-	  public void createAsset(AssetForm assetForm);
+	  public void createAsset(AssetInfoForm assetInfoForm);
 	  
 	  public void deleteAsset(int assetid);
 	  
@@ -55,5 +56,7 @@ public interface ReportEmpDAO {
 	  public NodeTree createChildren(NodeTree parentNode);
 	  
 	  public void createUser(User user);
+
+	public Product findProduct(String code);
 	  
 	}

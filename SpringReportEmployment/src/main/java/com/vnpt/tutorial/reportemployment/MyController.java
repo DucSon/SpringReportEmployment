@@ -12,11 +12,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.vnpt.dao.DepartmentDAO;
 import com.vnpt.dao.ReportEmpDAO;
 import com.vnpt.entity.Department;
 import com.vnpt.entity.NodeTree;
 import com.vnpt.entity.Personalreport;
+import com.vnpt.entity.Product;
 import com.vnpt.entity.SearchForm;
 import com.vnpt.entity.Servicereport;
 import com.vnpt.entity.Staff;
@@ -24,8 +27,8 @@ import com.vnpt.entity.User;
 import com.vnpt.entity.UserForm;
 import com.vnpt.entity.Weeklyplan;
 import com.vnpt.entity.Weekreport;
-import com.vnpt.entity.Asset;
 import com.vnpt.entity.AssetForm;
+import com.vnpt.entity.AssetInfoForm;
 import com.vnpt.entity.ChildNode;
 import com.vnpt.entity.Dailyreport;
 import org.codehaus.jackson.JsonNode;
@@ -556,6 +559,7 @@ public class MyController {
 		return "weeklyplan";
 	}
 	
+	
 	@RequestMapping(value = "/assetmanager", method = RequestMethod.GET)
 	public String getAsset(Model model, Principal principal) {
 
@@ -595,28 +599,48 @@ public class MyController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	
+		Product product = reportEmpDAO.findProduct("S004");
 		
 		return "assetmanager";
 	}
 	
 	@RequestMapping(value = "/assetmanager", method = RequestMethod.POST, params = {
-	"saveAsset" }, produces = "text/html; charset=UTF-8")
+	"saveAsset" })
 public String saveAssetFormHandlerPOST(HttpServletRequest request, Model model,
-	@ModelAttribute("Asset") AssetForm assetform) {
-		assetform.setUsername(username);
-reportEmpDAO.createAsset(assetform);
+	@ModelAttribute("assetInfoForm") AssetInfoForm assetInfoForm) {
+		assetInfoForm.setUsername(username);
+reportEmpDAO.createAsset(assetInfoForm);
 
-return this.doShowAsset(request, model, assetform);
+return this.doShowAsset(request, model, assetInfoForm);
 }
 	
-	private String doShowAsset(HttpServletRequest request, Model model, AssetForm asset) {
+	private String doShowAsset(HttpServletRequest request, Model model, AssetInfoForm asset) {
 
 		List<AssetForm> list = reportEmpDAO.listAsset(this.username);
 		model.addAttribute("list", list);
 		model.addAttribute("asset", asset);
 		return "assetmanager";
 	}
-
+	
+    @RequestMapping(value = { "/productImage" }, method = RequestMethod.GET)
+    public void productImage(HttpServletRequest request, HttpServletResponse response, Model model,
+            @RequestParam("code") String code) throws IOException {
+        Product product = null;
+        
+        if (code != null) {
+            product = this.reportEmpDAO.findProduct(code);
+        }
+        
+        if (product != null && product.getImage() != null) {
+            response.setContentType("image/jpeg, image/jpg, image/png, image/gif");
+            response.getOutputStream().write(product.getImage());
+            product.getImage();
+        }
+        
+        response.getOutputStream().close();
+        
+    }
 
 @RequestMapping(value = "/assetmanager", method = RequestMethod.POST, params = { "deleteAsset" })
 public String deleteAssetFormHandlerPOST(HttpServletRequest request, Model model) {
@@ -929,7 +953,8 @@ return "redirect:assetmanager";
 		return "weekreport";
 
 	}
-
+	
+ 
 	// LeaderReport
 	private String doSearchLeaderReport(HttpServletRequest request, Model model, //
 			SearchForm searchForm) {

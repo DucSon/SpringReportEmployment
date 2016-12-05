@@ -16,7 +16,7 @@ public class Asset {
 	private String hsd;
 	private String location;
 	private int price;
-	private String image;
+	private byte[] image;
 	private String status;
 	private String statusasset;
 	private String note;
@@ -50,11 +50,11 @@ public class Asset {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	@Column(name = "IMAGE", length = 50)
-	public String getImage() {
+	@Column(name = "IMAGE")
+	public byte[] getImage() {
 		return image;
 	}
-	public void setImage(String image) {
+	public void setImage(byte[] image) {
 		this.image = image;
 	}
 	@Column(name = "LOCATION", length = 50)
