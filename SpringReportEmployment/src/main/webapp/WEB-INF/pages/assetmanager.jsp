@@ -113,7 +113,7 @@ var endDateAfter="";
 									<td style="width: 10%;">${listAsset.hsd}</td>
 									<td style="width: 10%;">${listAsset.location}</td>
 									<td style="width: 7%;">${listAsset.price}</td>
-									<td style="width: 20%;"><img src='${pageContext.request.contextPath}/assetImage?assetid="+${listAsset.assetid}+"' width='100'/></td>
+									<td style="width: 20%;"><img src='${pageContext.request.contextPath}/assetImage?assetid=${listAsset.assetid}' width='100'/></td>
 									<td style="width: 10%;">${listAsset.statusasset}</td>
 									<td style="width: 5%;">${listAsset.status}</td>
 									<td style="width: 17%;">${listAsset.note}</td>
